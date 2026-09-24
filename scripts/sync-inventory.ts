@@ -1,7 +1,24 @@
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync, renameSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { format, resolveConfig } from 'prettier';
 import { inventorySchema, type App, type Device } from '../src/server/config.js';
+
+interface EvaluatedConfig {
+  nginxEnabled: boolean;
+  hosts: Record<
+    string,
+    {
+      root: string | null;
+      forceSSL: boolean;
+      addSSL: boolean;
+      onlySSL: boolean;
+      enableACME: boolean;
+      locations: Record<string, { proxyPass: string | null }>;
+    }
+  >;
+  units: string[];
+}
 
 const repo = resolve(process.argv[2] || '../nix-server');
 const expression = `c: {
@@ -14,11 +31,24 @@ const expression = `c: {
 }`;
 const fleet = [
   { id: 'hetzner', name: 'Hetzner', subtitle: 'Cloud server · Germany', ssh: 'root@91.99.204.136' },
-  { id: 'nixpi', name: 'nixpi', subtitle: 'Raspberry Pi 5 · Home', ssh: 'infiniter@nixpi.tail6650cb.ts.net' },
-  { id: 'nixzero', name: 'nixzero', subtitle: 'Raspberry Pi Zero 2 W · Home', ssh: 'infiniter@nixzero.tail6650cb.ts.net' },
+  {
+    id: 'nixpi',
+    name: 'nixpi',
+    subtitle: 'Raspberry Pi 5 · Home',
+    ssh: 'infiniter@nixpi.tail6650cb.ts.net',
+  },
+  {
+    id: 'nixzero',
+    name: 'nixzero',
+    subtitle: 'Raspberry Pi Zero 2 W · Home',
+    ssh: 'infiniter@nixzero.tail6650cb.ts.net',
+  },
 ];
 // Runtime mappings verified against container Compose labels and systemd on 2026-09-24.
-const mappings: Record<string, Record<string, [string, string, string, ('docker' | 'systemd')?]>> = {
+const mappings: Record<
+  string,
+  Record<string, [string, string, string, ('docker' | 'systemd')?]>
+> = {
   nixpi: {
     status: ['Fleet status', 'docker-uptime-dashboard.service', 'NixOS container', 'systemd'],
     relay: ['File relay', 'file-relay-relay-1', 'Docker Compose'],
@@ -35,8 +65,18 @@ const mappings: Record<string, Record<string, [string, string, string, ('docker'
   },
   hetzner: {
     auth: ['Fleet sign-in', 'oauth2-proxy.service', 'OAuth2 Proxy', 'systemd'],
-    'edit-shift-distributor': ['Shift development', 'opencode-shift-distributor.service', 'OpenCode', 'systemd'],
-    'edit-vite-portfolio': ['Portfolio development', 'opencode-vite-portfolio.service', 'OpenCode', 'systemd'],
+    'edit-shift-distributor': [
+      'Shift development',
+      'opencode-shift-distributor.service',
+      'OpenCode',
+      'systemd',
+    ],
+    'edit-vite-portfolio': [
+      'Portfolio development',
+      'opencode-vite-portfolio.service',
+      'OpenCode',
+      'systemd',
+    ],
     chat: ['Portfolio chat', 'portfolio-chat', 'Docker Compose'],
     shift: ['Shift distributor', 'shift-distributor', 'Docker Compose'],
     'car-socket': ['Browser car socket', 'browser-car-server-1', 'Docker Compose'],
@@ -51,45 +91,97 @@ const mappings: Record<string, Record<string, [string, string, string, ('docker'
   },
 };
 const names: Record<string, string> = {
-  photo: 'Photos', paste: 'Paste', drive: 'Drive', netflix: 'Media server', fit: 'Fitness tracker',
-  'fit-api': 'Fitness API', portfolio: 'Portfolio', gol: 'Game of Life', car: 'Browser car',
-  ntfy: 'Notifications', edit: 'Image editor', n8n: 'n8n', share: 'Shared files',
+  photo: 'Photos',
+  paste: 'Paste',
+  drive: 'Drive',
+  netflix: 'Media server',
+  fit: 'Fitness tracker',
+  'fit-api': 'Fitness API',
+  portfolio: 'Portfolio',
+  gol: 'Game of Life',
+  car: 'Browser car',
+  ntfy: 'Notifications',
+  edit: 'Image editor',
+  n8n: 'n8n',
+  share: 'Shared files',
 };
 const devices: Device[] = [];
 for (const host of fleet) {
   console.log(`Evaluating ${host.id}…`);
-  const data = JSON.parse(execFileSync('nix', ['eval', '--json', '--no-write-lock-file', `${repo}#nixosConfigurations.${host.id}.config`, '--apply', expression], { timeout: 180_000, maxBuffer: 4_000_000, encoding: 'utf8' }));
-  const apps: App[] = Object.entries(data.nginxEnabled ? data.hosts : {}).map(([domain, v]: [string, any]) => {
+  const data: EvaluatedConfig = JSON.parse(
+    execFileSync(
+      'nix',
+      [
+        'eval',
+        '--json',
+        '--no-write-lock-file',
+        `${repo}#nixosConfigurations.${host.id}.config`,
+        '--apply',
+        expression,
+      ],
+      { timeout: 180_000, maxBuffer: 4_000_000, encoding: 'utf8' },
+    ),
+  );
+  const apps: App[] = Object.entries(data.nginxEnabled ? data.hosts : {}).map(([domain, v]) => {
     const key = domain.split('.')[0];
     const mapping = mappings[host.id]?.[key];
     const upstream = v.locations['/']?.proxyPass as string | undefined;
     const external = upstream && !/^https?:\/\/(127\.0\.0\.1|localhost)(:|\/)/.test(upstream);
     const tls = v.forceSSL || v.addSSL || v.onlySSL || v.enableACME;
     return {
-      id: `${host.id}/${domain}`, name: mapping?.[0] || names[key] || domain,
-      domain, url: `${tls ? 'https' : 'http'}://${domain}/`,
-      ...(key === 'car-socket' || (key === 'uptime' && host.id === 'hetzner') || (key === 'fit-api' && host.id === 'nixpi') ? { healthPath: '/health' } : {}),
+      id: `${host.id}/${domain}`,
+      name: mapping?.[0] || names[key] || domain,
+      domain,
+      url: `${tls ? 'https' : 'http'}://${domain}/`,
+      ...(key === 'car-socket' ||
+      (key === 'uptime' && host.id === 'hetzner') ||
+      (key === 'fit-api' && host.id === 'nixpi')
+        ? { healthPath: '/health' }
+        : {}),
       ...(key === 'chat' ? { healthPath: '/socket.io/?EIO=4&transport=polling' } : {}),
       ...(key === 'auth' ? { healthPath: '/oauth2/sign_in' } : {}),
       ...(key === 'status' ? { healthPath: '/api/health' } : {}),
       ...(key === 'fitness-ai-auth' ? { healthPath: '/api/auth/ok', acceptedCodes: [200] } : {}),
       ...(key === 'convex-site-edit' ? { reachabilityCodes: [404] } : {}),
       kind: external ? 'external' : v.root && !mapping ? 'static' : 'application',
-      ...(mapping ? { runtime: { type: mapping[3] || 'docker', name: mapping[1], label: mapping[2] } } : {}),
-      protected: ['mongo', 'pi-status'].includes(key), publicCheck: true,
+      ...(mapping
+        ? { runtime: { type: mapping[3] || 'docker', name: mapping[1], label: mapping[2] } }
+        : {}),
+      protected: ['mongo', 'pi-status'].includes(key),
+      publicCheck: true,
     };
   });
-  for (const [unit, name] of [['sshd', 'SSH'], ['tailscaled', 'Tailscale'], ['nginx', 'Nginx'], ['t3code', 'T3 Code']]) {
-    if (data.units.includes(unit)) apps.push({
-      id: `${host.id}/service/${unit}`, name, kind: 'service',
-      runtime: { type: 'systemd', name: `${unit}.service`, label: 'systemd' }, protected: false, publicCheck: false,
-    });
+  for (const [unit, name] of [
+    ['sshd', 'SSH'],
+    ['tailscaled', 'Tailscale'],
+    ['nginx', 'Nginx'],
+    ['t3code', 'T3 Code'],
+  ]) {
+    if (data.units.includes(unit))
+      apps.push({
+        id: `${host.id}/service/${unit}`,
+        name,
+        kind: 'service',
+        runtime: { type: 'systemd', name: `${unit}.service`, label: 'systemd' },
+        protected: false,
+        publicCheck: false,
+      });
   }
   devices.push({ ...host, apps });
 }
-const revision = execFileSync('git', ['-C', repo, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+const revision = execFileSync('git', ['-C', repo, 'rev-parse', 'HEAD'], {
+  encoding: 'utf8',
+}).trim();
 const inventory = inventorySchema.parse({ updatedAt: new Date().toISOString(), revision, devices });
 mkdirSync('config', { recursive: true });
-writeFileSync('config/fleet.json.tmp', JSON.stringify(inventory, null, 2) + '\n');
+writeFileSync(
+  'config/fleet.json.tmp',
+  await format(JSON.stringify(inventory), {
+    ...(await resolveConfig('config/fleet.json')),
+    parser: 'json',
+  }),
+);
 renameSync('config/fleet.json.tmp', 'config/fleet.json');
-console.log(`Saved ${devices.length} devices and ${devices.reduce((n, d) => n + d.apps.length, 0)} monitors.`);
+console.log(
+  `Saved ${devices.length} devices and ${devices.reduce((n, d) => n + d.apps.length, 0)} monitors.`,
+);

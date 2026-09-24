@@ -13,7 +13,11 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "inventory:sync": "tsx scripts/sync-inventory.ts",
-    "check:once": "tsx scripts/check-once.ts"
+    "check:once": "tsx scripts/check-once.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix --max-warnings 0"
   },
   "repository": {
     "type": "git",
@@ -39,6 +43,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/better-sqlite3": "^9.6.0",
@@ -47,9 +52,15 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
     "concurrently": "^10.0.5",
+    "eslint": "10.11.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.12.0",
+    "prettier": "3.9.9",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.15",
-    "typescript": "^7.0.2",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.70.1",
     "vite": "^8.3.0",
     "vitest": "^5.0.1"
   },

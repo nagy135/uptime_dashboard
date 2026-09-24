@@ -7,18 +7,18 @@ No live availability checks or deployments have been performed.
 
 ## Proposed stack
 
-| Layer | Choice | Purpose |
-| --- | --- | --- |
-| Language | TypeScript | Shared inventory, check-result, and API types |
-| UI | React + Vite | A dashboard with one section per fleet device |
-| Styling | Tailwind CSS | Responsive device sections, status badges, history bars |
-| Browser data | TanStack Query | Fetch stored status every 30 seconds; refresh on focus |
-| Server | Node.js LTS + Fastify | JSON API, compiled frontend assets, background polling |
-| Storage | SQLite + better-sqlite3 + Drizzle | Local database, typed queries, versioned migrations |
-| Inventory | Nix evaluation → filtered JSON | Read the effective host configuration, including imported modules |
-| Runtime inspection | OpenSSH over Tailscale | Batch read-only systemd and local HTTP checks per device |
-| Deployment | NixOS systemd service behind nginx | One central process and persistent SQLite storage |
-| Verification | Vitest + Playwright | Check classification, database persistence, dashboard behavior |
+| Layer              | Choice                             | Purpose                                                           |
+| ------------------ | ---------------------------------- | ----------------------------------------------------------------- |
+| Language           | TypeScript                         | Shared inventory, check-result, and API types                     |
+| UI                 | React + Vite                       | A dashboard with one section per fleet device                     |
+| Styling            | Tailwind CSS                       | Responsive device sections, status badges, history bars           |
+| Browser data       | TanStack Query                     | Fetch stored status every 30 seconds; refresh on focus            |
+| Server             | Node.js LTS + Fastify              | JSON API, compiled frontend assets, background polling            |
+| Storage            | SQLite + better-sqlite3 + Drizzle  | Local database, typed queries, versioned migrations               |
+| Inventory          | Nix evaluation → filtered JSON     | Read the effective host configuration, including imported modules |
+| Runtime inspection | OpenSSH over Tailscale             | Batch read-only systemd and local HTTP checks per device          |
+| Deployment         | NixOS systemd service behind nginx | One central process and persistent SQLite storage                 |
+| Verification       | Vitest + Playwright                | Check classification, database persistence, dashboard behavior    |
 
 Use stable dependency releases pinned in a lockfile when implementation begins.
 Proposed central host: Hetzner. Keep dashboard access private through Tailscale
@@ -30,8 +30,7 @@ foreign keys, migrations, and scheduled SQLite-consistent backups.
 - Fleet sections: `hetzner`, `nixpi`, and `nixzero`. The Mac is outside this
   repository's inventory and can be added later from `nix-darwin`.
 - Hetzner has reverse-proxied applications and static sites. Its
-  `uptime.infiniter.tech` and `car-socket.infiniter.tech` routes both target port
-  13331. Verify the existing listener before choosing this dashboard's port.
+  `uptime.infiniter.tech` and `car-socket.infiniter.tech` routes both target port 13331. Verify the existing listener before choosing this dashboard's port.
 - nixpi has web routes in its host file and imported modules, including
   Nextcloud, Fitness AI, and an existing Grafana system-metrics dashboard.
 - nixzero currently defines infrastructure services but no nginx apps. Show its

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T07:37:36.180Z",
+  "updatedAt": "2026-09-24T07:41:49.688Z",
   "revision": "99f69b34b3d6299d3f49e07064368038dfd19f6c",
   "devices": [
     {
@@ -14,11 +14,7 @@
           "kind": "application",
           "url": "https://addyart.eu/",
           "domain": "addyart.eu",
-          "runtime": {
-            "type": "docker",
-            "name": "addy-art",
-            "label": "Docker Compose"
-          },
+          "runtime": { "type": "docker", "name": "addy-art", "label": "Docker Compose" },
           "protected": false,
           "publicCheck": true
         },
@@ -29,11 +25,7 @@
           "url": "https://auth.infiniter.tech/",
           "healthPath": "/oauth2/sign_in",
           "domain": "auth.infiniter.tech",
-          "runtime": {
-            "type": "systemd",
-            "name": "oauth2-proxy.service",
-            "label": "OAuth2 Proxy"
-          },
+          "runtime": { "type": "systemd", "name": "oauth2-proxy.service", "label": "OAuth2 Proxy" },
           "protected": false,
           "publicCheck": true
         },
@@ -68,11 +60,7 @@
           "url": "https://chat.infiniter.tech/",
           "healthPath": "/socket.io/?EIO=4&transport=polling",
           "domain": "chat.infiniter.tech",
-          "runtime": {
-            "type": "docker",
-            "name": "portfolio-chat",
-            "label": "Docker Compose"
-          },
+          "runtime": { "type": "docker", "name": "portfolio-chat", "label": "Docker Compose" },
           "protected": false,
           "publicCheck": true
         },
@@ -82,11 +70,7 @@
           "kind": "application",
           "url": "https://convex-edit.infiniter.tech/",
           "domain": "convex-edit.infiniter.tech",
-          "runtime": {
-            "type": "docker",
-            "name": "ai_image_edit-backend-1",
-            "label": "Convex"
-          },
+          "runtime": { "type": "docker", "name": "ai_image_edit-backend-1", "label": "Convex" },
           "protected": false,
           "publicCheck": true
         },
@@ -95,15 +79,9 @@
           "name": "Image editor actions",
           "kind": "application",
           "url": "https://convex-site-edit.infiniter.tech/",
-          "reachabilityCodes": [
-            404
-          ],
+          "reachabilityCodes": [404],
           "domain": "convex-site-edit.infiniter.tech",
-          "runtime": {
-            "type": "docker",
-            "name": "ai_image_edit-backend-1",
-            "label": "Convex"
-          },
+          "runtime": { "type": "docker", "name": "ai_image_edit-backend-1", "label": "Convex" },
           "protected": false,
           "publicCheck": true
         },
@@ -127,11 +105,7 @@
           "kind": "application",
           "url": "https://db-gol.infiniter.tech/",
           "domain": "db-gol.infiniter.tech",
-          "runtime": {
-            "type": "docker",
-            "name": "docker-backend-1",
-            "label": "Convex"
-          },
+          "runtime": { "type": "docker", "name": "docker-backend-1", "label": "Convex" },
           "protected": false,
           "publicCheck": true
         },
@@ -291,11 +265,7 @@
           "kind": "application",
           "url": "https://shift.infiniter.tech/",
           "domain": "shift.infiniter.tech",
-          "runtime": {
-            "type": "docker",
-            "name": "shift-distributor",
-            "label": "Docker Compose"
-          },
+          "runtime": { "type": "docker", "name": "shift-distributor", "label": "Docker Compose" },
           "protected": false,
           "publicCheck": true
         },
@@ -332,11 +302,7 @@
           "id": "hetzner/service/sshd",
           "name": "SSH",
           "kind": "service",
-          "runtime": {
-            "type": "systemd",
-            "name": "sshd.service",
-            "label": "systemd"
-          },
+          "runtime": { "type": "systemd", "name": "sshd.service", "label": "systemd" },
           "protected": false,
           "publicCheck": false
         },
@@ -344,11 +310,7 @@
           "id": "hetzner/service/nginx",
           "name": "Nginx",
           "kind": "service",
-          "runtime": {
-            "type": "systemd",
-            "name": "nginx.service",
-            "label": "systemd"
-          },
+          "runtime": { "type": "systemd", "name": "nginx.service", "label": "systemd" },
           "protected": false,
           "publicCheck": false
         }
@@ -380,11 +342,7 @@
           "kind": "application",
           "url": "https://conversation.infiniter.tech/",
           "domain": "conversation.infiniter.tech",
-          "runtime": {
-            "type": "docker",
-            "name": "conversation-app-1",
-            "label": "Docker Compose"
-          },
+          "runtime": { "type": "docker", "name": "conversation-app-1", "label": "Docker Compose" },
           "protected": false,
           "publicCheck": true
         },
@@ -394,11 +352,7 @@
           "kind": "application",
           "url": "http://drive.infiniter.tech/",
           "domain": "drive.infiniter.tech",
-          "runtime": {
-            "type": "systemd",
-            "name": "phpfpm-nextcloud.service",
-            "label": "PHP-FPM"
-          },
+          "runtime": { "type": "systemd", "name": "phpfpm-nextcloud.service", "label": "PHP-FPM" },
           "protected": false,
           "publicCheck": true
         },
@@ -409,11 +363,7 @@
           "url": "https://fit-api.infiniter.tech/",
           "healthPath": "/health",
           "domain": "fit-api.infiniter.tech",
-          "runtime": {
-            "type": "docker",
-            "name": "fitness-tracker",
-            "label": "Docker Compose"
-          },
+          "runtime": { "type": "docker", "name": "fitness-tracker", "label": "Docker Compose" },
           "protected": false,
           "publicCheck": true
         },
@@ -438,14 +388,8 @@
           "url": "https://fitness-ai-auth.infiniter.tech/",
           "healthPath": "/api/auth/ok",
           "domain": "fitness-ai-auth.infiniter.tech",
-          "runtime": {
-            "type": "docker",
-            "name": "fitness-ai-convex",
-            "label": "Convex"
-          },
-          "acceptedCodes": [
-            200
-          ],
+          "runtime": { "type": "docker", "name": "fitness-ai-convex", "label": "Convex" },
+          "acceptedCodes": [200],
           "protected": false,
           "publicCheck": true
         },
@@ -455,11 +399,7 @@
           "kind": "application",
           "url": "https://fitness-ai-dashboard.infiniter.tech/",
           "domain": "fitness-ai-dashboard.infiniter.tech",
-          "runtime": {
-            "type": "docker",
-            "name": "fitness-ai-dashboard",
-            "label": "Docker"
-          },
+          "runtime": { "type": "docker", "name": "fitness-ai-dashboard", "label": "Docker" },
           "protected": false,
           "publicCheck": true
         },
@@ -469,11 +409,7 @@
           "kind": "application",
           "url": "https://fitness-ai.infiniter.tech/",
           "domain": "fitness-ai.infiniter.tech",
-          "runtime": {
-            "type": "docker",
-            "name": "fitness-ai-convex",
-            "label": "Convex"
-          },
+          "runtime": { "type": "docker", "name": "fitness-ai-convex", "label": "Convex" },
           "protected": false,
           "publicCheck": true
         },
@@ -483,11 +419,7 @@
           "kind": "application",
           "url": "https://pi-status.infiniter.tech/",
           "domain": "pi-status.infiniter.tech",
-          "runtime": {
-            "type": "systemd",
-            "name": "grafana.service",
-            "label": "Grafana"
-          },
+          "runtime": { "type": "systemd", "name": "grafana.service", "label": "Grafana" },
           "protected": true,
           "publicCheck": true
         },
@@ -497,11 +429,7 @@
           "kind": "application",
           "url": "https://relay.infiniter.tech/",
           "domain": "relay.infiniter.tech",
-          "runtime": {
-            "type": "docker",
-            "name": "file-relay-relay-1",
-            "label": "Docker Compose"
-          },
+          "runtime": { "type": "docker", "name": "file-relay-relay-1", "label": "Docker Compose" },
           "protected": false,
           "publicCheck": true
         },
@@ -538,11 +466,7 @@
           "id": "nixpi/service/sshd",
           "name": "SSH",
           "kind": "service",
-          "runtime": {
-            "type": "systemd",
-            "name": "sshd.service",
-            "label": "systemd"
-          },
+          "runtime": { "type": "systemd", "name": "sshd.service", "label": "systemd" },
           "protected": false,
           "publicCheck": false
         },
@@ -550,11 +474,7 @@
           "id": "nixpi/service/tailscaled",
           "name": "Tailscale",
           "kind": "service",
-          "runtime": {
-            "type": "systemd",
-            "name": "tailscaled.service",
-            "label": "systemd"
-          },
+          "runtime": { "type": "systemd", "name": "tailscaled.service", "label": "systemd" },
           "protected": false,
           "publicCheck": false
         },
@@ -562,11 +482,7 @@
           "id": "nixpi/service/nginx",
           "name": "Nginx",
           "kind": "service",
-          "runtime": {
-            "type": "systemd",
-            "name": "nginx.service",
-            "label": "systemd"
-          },
+          "runtime": { "type": "systemd", "name": "nginx.service", "label": "systemd" },
           "protected": false,
           "publicCheck": false
         },
@@ -574,11 +490,7 @@
           "id": "nixpi/service/t3code",
           "name": "T3 Code",
           "kind": "service",
-          "runtime": {
-            "type": "systemd",
-            "name": "t3code.service",
-            "label": "systemd"
-          },
+          "runtime": { "type": "systemd", "name": "t3code.service", "label": "systemd" },
           "protected": false,
           "publicCheck": false
         }
@@ -594,11 +506,7 @@
           "id": "nixzero/service/sshd",
           "name": "SSH",
           "kind": "service",
-          "runtime": {
-            "type": "systemd",
-            "name": "sshd.service",
-            "label": "systemd"
-          },
+          "runtime": { "type": "systemd", "name": "sshd.service", "label": "systemd" },
           "protected": false,
           "publicCheck": false
         },
@@ -606,11 +514,7 @@
           "id": "nixzero/service/tailscaled",
           "name": "Tailscale",
           "kind": "service",
-          "runtime": {
-            "type": "systemd",
-            "name": "tailscaled.service",
-            "label": "systemd"
-          },
+          "runtime": { "type": "systemd", "name": "tailscaled.service", "label": "systemd" },
           "protected": false,
           "publicCheck": false
         }

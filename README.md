@@ -19,6 +19,10 @@ Open http://localhost:13332. For frontend development, use `npm run dev` and ope
 http://localhost:5173. The API remains on port 13332. There is no login.
 
 ```sh
+npm run format            # format supported project files with Prettier
+npm run format:check      # check formatting without changes
+npm run lint              # ESLint: TypeScript and React Hooks
+npm run lint:fix          # apply automatic lint fixes
 npm test                  # collector, HTTP, SQLite, and public API integration tests
 npm run test:e2e           # desktop and mobile in installed Google Chrome
 npm run inventory:sync    # evaluate ../nix-server; requires Nix
@@ -67,13 +71,13 @@ There are no write APIs, arbitrary probe URLs, or remote-command endpoints.
 
 ## Configuration
 
-| Environment variable | Default |
-| --- | --- |
-| `PORT` | `13332` |
-| `HOST` | `0.0.0.0` |
-| `DATABASE_PATH` | `data/fleet.sqlite` |
-| `INVENTORY_PATH` | `config/fleet.json` |
-| `SSH_IDENTITY_FILE` | OpenSSH defaults; production `/app/ssh/id_ed25519` |
+| Environment variable   | Default                                             |
+| ---------------------- | --------------------------------------------------- |
+| `PORT`                 | `13332`                                             |
+| `HOST`                 | `0.0.0.0`                                           |
+| `DATABASE_PATH`        | `data/fleet.sqlite`                                 |
+| `INVENTORY_PATH`       | `config/fleet.json`                                 |
+| `SSH_IDENTITY_FILE`    | OpenSSH defaults; production `/app/ssh/id_ed25519`  |
 | `SSH_KNOWN_HOSTS_FILE` | OpenSSH defaults; production `/app/ssh/known_hosts` |
 
 The interval is fixed at 30 seconds. Network checks have 7-second deadlines;
