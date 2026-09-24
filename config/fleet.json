@@ -1,0 +1,628 @@
+{
+  "updatedAt": "2026-09-24T07:06:30.947Z",
+  "revision": "b94baa28b58d15e8cfbc30569d536b0132158bec",
+  "devices": [
+    {
+      "id": "hetzner",
+      "name": "Hetzner",
+      "subtitle": "Cloud server · Germany",
+      "ssh": "root@91.99.204.136",
+      "apps": [
+        {
+          "id": "hetzner/addyart.eu",
+          "name": "Addy Art",
+          "kind": "application",
+          "url": "https://addyart.eu/",
+          "domain": "addyart.eu",
+          "runtime": {
+            "type": "docker",
+            "name": "addy-art",
+            "label": "Docker Compose"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/auth.infiniter.tech",
+          "name": "Fleet sign-in",
+          "kind": "application",
+          "url": "https://auth.infiniter.tech/",
+          "healthPath": "/oauth2/sign_in",
+          "domain": "auth.infiniter.tech",
+          "runtime": {
+            "type": "systemd",
+            "name": "oauth2-proxy.service",
+            "label": "OAuth2 Proxy"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/car-socket.infiniter.tech",
+          "name": "Browser car socket",
+          "kind": "application",
+          "url": "https://car-socket.infiniter.tech/",
+          "healthPath": "/health",
+          "domain": "car-socket.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "browser-car-server-1",
+            "label": "Docker Compose"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/car.infiniter.tech",
+          "name": "Browser car",
+          "kind": "static",
+          "url": "https://car.infiniter.tech/",
+          "domain": "car.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/chat.infiniter.tech",
+          "name": "Portfolio chat",
+          "kind": "application",
+          "url": "https://chat.infiniter.tech/",
+          "healthPath": "/socket.io/?EIO=4&transport=polling",
+          "domain": "chat.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "portfolio-chat",
+            "label": "Docker Compose"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/clerk.infiniter.tech",
+          "name": "Clerk authentication",
+          "kind": "external",
+          "url": "https://clerk.infiniter.tech/",
+          "domain": "clerk.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/convex-edit.infiniter.tech",
+          "name": "Image editor backend",
+          "kind": "application",
+          "url": "https://convex-edit.infiniter.tech/",
+          "domain": "convex-edit.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "ai_image_edit-backend-1",
+            "label": "Convex"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/convex-site-edit.infiniter.tech",
+          "name": "Image editor actions",
+          "kind": "application",
+          "url": "https://convex-site-edit.infiniter.tech/",
+          "reachabilityCodes": [
+            404
+          ],
+          "domain": "convex-site-edit.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "ai_image_edit-backend-1",
+            "label": "Convex"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/dashboard-edit.infiniter.tech",
+          "name": "Image editor dashboard",
+          "kind": "application",
+          "url": "https://dashboard-edit.infiniter.tech/",
+          "domain": "dashboard-edit.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "ai_image_edit-dashboard-1",
+            "label": "Docker Compose"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/db-gol.infiniter.tech",
+          "name": "Game of Life backend",
+          "kind": "application",
+          "url": "https://db-gol.infiniter.tech/",
+          "domain": "db-gol.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "docker-backend-1",
+            "label": "Convex"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/drive.infiniter.tech",
+          "name": "Drive",
+          "kind": "application",
+          "url": "https://drive.infiniter.tech/",
+          "domain": "drive.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/edit-shift-distributor.infiniter.tech",
+          "name": "Shift development",
+          "kind": "application",
+          "url": "https://edit-shift-distributor.infiniter.tech/",
+          "domain": "edit-shift-distributor.infiniter.tech",
+          "runtime": {
+            "type": "systemd",
+            "name": "opencode-shift-distributor.service",
+            "label": "OpenCode"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/edit-vite-portfolio.infiniter.tech",
+          "name": "Portfolio development",
+          "kind": "application",
+          "url": "https://edit-vite-portfolio.infiniter.tech/",
+          "domain": "edit-vite-portfolio.infiniter.tech",
+          "runtime": {
+            "type": "systemd",
+            "name": "opencode-vite-portfolio.service",
+            "label": "OpenCode"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/edit.infiniter.tech",
+          "name": "Image editor",
+          "kind": "static",
+          "url": "https://edit.infiniter.tech/",
+          "domain": "edit.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/fit-api.infiniter.tech",
+          "name": "Fitness API",
+          "kind": "application",
+          "url": "https://fit-api.infiniter.tech/",
+          "domain": "fit-api.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/fit.infiniter.tech",
+          "name": "Fitness tracker",
+          "kind": "application",
+          "url": "https://fit.infiniter.tech/",
+          "domain": "fit.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/gol.infiniter.tech",
+          "name": "Game of Life",
+          "kind": "static",
+          "url": "https://gol.infiniter.tech/",
+          "domain": "gol.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/mongo.addyart.eu",
+          "name": "Mongo Express",
+          "kind": "application",
+          "url": "https://mongo.addyart.eu/",
+          "domain": "mongo.addyart.eu",
+          "runtime": {
+            "type": "docker",
+            "name": "addy-art-payload-mongo-express-1",
+            "label": "Docker Compose"
+          },
+          "protected": true,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/n8n.infiniter.tech",
+          "name": "n8n",
+          "kind": "application",
+          "url": "https://n8n.infiniter.tech/",
+          "domain": "n8n.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/netflix.infiniter.tech",
+          "name": "Media server",
+          "kind": "application",
+          "url": "https://netflix.infiniter.tech/",
+          "domain": "netflix.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/ntfy.infiniter.tech",
+          "name": "Notifications",
+          "kind": "application",
+          "url": "https://ntfy.infiniter.tech/",
+          "domain": "ntfy.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/paste.infiniter.tech",
+          "name": "Paste",
+          "kind": "application",
+          "url": "https://paste.infiniter.tech/",
+          "domain": "paste.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/photo.infiniter.tech",
+          "name": "Photos",
+          "kind": "application",
+          "url": "https://photo.infiniter.tech/",
+          "domain": "photo.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/portfolio.infiniter.tech",
+          "name": "Portfolio",
+          "kind": "static",
+          "url": "https://portfolio.infiniter.tech/",
+          "domain": "portfolio.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/share.infiniter.tech",
+          "name": "Shared files",
+          "kind": "static",
+          "url": "https://share.infiniter.tech/",
+          "domain": "share.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/shift.infiniter.tech",
+          "name": "Shift distributor",
+          "kind": "application",
+          "url": "https://shift.infiniter.tech/",
+          "domain": "shift.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "shift-distributor",
+            "label": "Docker Compose"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/uptime.infiniter.tech",
+          "name": "Existing uptime route",
+          "kind": "application",
+          "url": "https://uptime.infiniter.tech/",
+          "healthPath": "/health",
+          "domain": "uptime.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "browser-car-server-1",
+            "label": "Browser car container"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/version2.addyart.eu",
+          "name": "Addy Art CMS",
+          "kind": "application",
+          "url": "https://version2.addyart.eu/",
+          "domain": "version2.addyart.eu",
+          "runtime": {
+            "type": "docker",
+            "name": "addy-art-payload-app-1",
+            "label": "Docker Compose"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "hetzner/service/sshd",
+          "name": "SSH",
+          "kind": "service",
+          "runtime": {
+            "type": "systemd",
+            "name": "sshd.service",
+            "label": "systemd"
+          },
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "hetzner/service/nginx",
+          "name": "Nginx",
+          "kind": "service",
+          "runtime": {
+            "type": "systemd",
+            "name": "nginx.service",
+            "label": "systemd"
+          },
+          "protected": false,
+          "publicCheck": false
+        }
+      ]
+    },
+    {
+      "id": "nixpi",
+      "name": "nixpi",
+      "subtitle": "Raspberry Pi 5 · Home",
+      "ssh": "infiniter@nixpi.tail6650cb.ts.net",
+      "apps": [
+        {
+          "id": "nixpi/bread.infiniter.tech",
+          "name": "Bread comparison",
+          "kind": "application",
+          "url": "https://bread.infiniter.tech/",
+          "domain": "bread.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "bread-comparison-app-1",
+            "label": "Docker Compose"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/conversation.infiniter.tech",
+          "name": "Conversation",
+          "kind": "application",
+          "url": "https://conversation.infiniter.tech/",
+          "domain": "conversation.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "conversation-app-1",
+            "label": "Docker Compose"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/drive.infiniter.tech",
+          "name": "Nextcloud",
+          "kind": "application",
+          "url": "http://drive.infiniter.tech/",
+          "domain": "drive.infiniter.tech",
+          "runtime": {
+            "type": "systemd",
+            "name": "phpfpm-nextcloud.service",
+            "label": "PHP-FPM"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/fit-api.infiniter.tech",
+          "name": "Fitness API",
+          "kind": "application",
+          "url": "https://fit-api.infiniter.tech/",
+          "healthPath": "/health",
+          "domain": "fit-api.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "fitness-tracker",
+            "label": "Docker Compose"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/fit.infiniter.tech",
+          "name": "Fitness tracker",
+          "kind": "application",
+          "url": "https://fit.infiniter.tech/",
+          "domain": "fit.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "fitness-tracker-frontend",
+            "label": "Docker Compose"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/fitness-ai-auth.infiniter.tech",
+          "name": "Fitness AI actions",
+          "kind": "application",
+          "url": "https://fitness-ai-auth.infiniter.tech/",
+          "reachabilityCodes": [
+            404
+          ],
+          "domain": "fitness-ai-auth.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "fitness-ai-convex",
+            "label": "Convex"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/fitness-ai-dashboard.infiniter.tech",
+          "name": "Fitness AI dashboard",
+          "kind": "application",
+          "url": "https://fitness-ai-dashboard.infiniter.tech/",
+          "domain": "fitness-ai-dashboard.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "fitness-ai-dashboard",
+            "label": "Docker"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/fitness-ai.infiniter.tech",
+          "name": "Fitness AI",
+          "kind": "application",
+          "url": "https://fitness-ai.infiniter.tech/",
+          "domain": "fitness-ai.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "fitness-ai-convex",
+            "label": "Convex"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/pi-status.infiniter.tech",
+          "name": "Pi system metrics",
+          "kind": "application",
+          "url": "https://pi-status.infiniter.tech/",
+          "domain": "pi-status.infiniter.tech",
+          "runtime": {
+            "type": "systemd",
+            "name": "grafana.service",
+            "label": "Grafana"
+          },
+          "protected": true,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/relay.infiniter.tech",
+          "name": "File relay",
+          "kind": "application",
+          "url": "https://relay.infiniter.tech/",
+          "domain": "relay.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "file-relay-relay-1",
+            "label": "Docker Compose"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/speech.infiniter.tech",
+          "name": "Agentic speech",
+          "kind": "application",
+          "url": "https://speech.infiniter.tech/",
+          "domain": "speech.infiniter.tech",
+          "runtime": {
+            "type": "docker",
+            "name": "agentic_speech_demo-app-1",
+            "label": "Docker Compose"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/status.infiniter.tech",
+          "name": "Fleet status",
+          "kind": "application",
+          "url": "https://status.infiniter.tech/",
+          "healthPath": "/api/health",
+          "domain": "status.infiniter.tech",
+          "runtime": {
+            "type": "systemd",
+            "name": "docker-uptime-dashboard.service",
+            "label": "NixOS container"
+          },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/service/sshd",
+          "name": "SSH",
+          "kind": "service",
+          "runtime": {
+            "type": "systemd",
+            "name": "sshd.service",
+            "label": "systemd"
+          },
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "nixpi/service/tailscaled",
+          "name": "Tailscale",
+          "kind": "service",
+          "runtime": {
+            "type": "systemd",
+            "name": "tailscaled.service",
+            "label": "systemd"
+          },
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "nixpi/service/nginx",
+          "name": "Nginx",
+          "kind": "service",
+          "runtime": {
+            "type": "systemd",
+            "name": "nginx.service",
+            "label": "systemd"
+          },
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "nixpi/service/t3code",
+          "name": "T3 Code",
+          "kind": "service",
+          "runtime": {
+            "type": "systemd",
+            "name": "t3code.service",
+            "label": "systemd"
+          },
+          "protected": false,
+          "publicCheck": false
+        }
+      ]
+    },
+    {
+      "id": "nixzero",
+      "name": "nixzero",
+      "subtitle": "Raspberry Pi Zero 2 W · Home",
+      "ssh": "infiniter@nixzero.tail6650cb.ts.net",
+      "apps": [
+        {
+          "id": "nixzero/service/sshd",
+          "name": "SSH",
+          "kind": "service",
+          "runtime": {
+            "type": "systemd",
+            "name": "sshd.service",
+            "label": "systemd"
+          },
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "nixzero/service/tailscaled",
+          "name": "Tailscale",
+          "kind": "service",
+          "runtime": {
+            "type": "systemd",
+            "name": "tailscaled.service",
+            "label": "systemd"
+          },
+          "protected": false,
+          "publicCheck": false
+        }
+      ]
+    }
+  ]
+}

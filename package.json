@@ -1,0 +1,64 @@
+{
+  "name": "uptime_dashboard",
+  "version": "1.0.0",
+  "description": "Fleet application availability, collected every 30 seconds and stored in SQLite",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "dev": "concurrently -k \"tsx watch src/server/index.ts\" \"vite\"",
+    "build": "tsc --noEmit && vite build && tsc -p tsconfig.server.json",
+    "start": "node dist/server/index.js",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "inventory:sync": "tsx scripts/sync-inventory.ts",
+    "check:once": "tsx scripts/check-once.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nagy135/uptime_dashboard.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/nagy135/uptime_dashboard/issues"
+  },
+  "homepage": "https://github.com/nagy135/uptime_dashboard#readme",
+  "dependencies": {
+    "@fastify/static": "^10.1.4",
+    "@tanstack/react-query": "^5.103.2",
+    "better-sqlite3": "^13.0.3",
+    "drizzle-orm": "^0.45.3",
+    "fastify": "^5.12.5",
+    "lucide-react": "^1.48.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "concurrently": "^10.0.5",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=22.12"
+  },
+  "allowScripts": {
+    "better-sqlite3@13.0.3": true,
+    "esbuild@0.28.2": true
+  }
+}
