@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-24T07:06:30.947Z",
-  "revision": "b94baa28b58d15e8cfbc30569d536b0132158bec",
+  "updatedAt": "2026-09-24T07:22:28.491Z",
+  "revision": "99f69b34b3d6299d3f49e07064368038dfd19f6c",
   "devices": [
     {
       "id": "hetzner",
@@ -73,15 +73,6 @@
             "name": "portfolio-chat",
             "label": "Docker Compose"
           },
-          "protected": false,
-          "publicCheck": true
-        },
-        {
-          "id": "hetzner/clerk.infiniter.tech",
-          "name": "Clerk authentication",
-          "kind": "external",
-          "url": "https://clerk.infiniter.tech/",
-          "domain": "clerk.infiniter.tech",
           "protected": false,
           "publicCheck": true
         },

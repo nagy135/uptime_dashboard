@@ -53,7 +53,7 @@ const mappings: Record<string, Record<string, [string, string, string, ('docker'
 const names: Record<string, string> = {
   photo: 'Photos', paste: 'Paste', drive: 'Drive', netflix: 'Media server', fit: 'Fitness tracker',
   'fit-api': 'Fitness API', portfolio: 'Portfolio', gol: 'Game of Life', car: 'Browser car',
-  ntfy: 'Notifications', clerk: 'Clerk authentication', edit: 'Image editor', n8n: 'n8n', share: 'Shared files',
+  ntfy: 'Notifications', edit: 'Image editor', n8n: 'n8n', share: 'Shared files',
 };
 const devices: Device[] = [];
 for (const host of fleet) {
