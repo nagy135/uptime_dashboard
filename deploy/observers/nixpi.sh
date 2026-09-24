@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -u
-printf 'ready 2afae08cbbb0ad07\n'
+printf 'ready 49fd958cd510eeaa\n'
 ( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'bread.infiniter.tech:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://bread.infiniter.tech/' 2>/dev/null); printf '0\thttp\t%s\n' "$result" ) &
 ( result=$(docker inspect --format '{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' -- 'bread-comparison-app-1' 2>/dev/null) || result=unknown; printf '0\truntime\t%s\n' "$result" ) &
 ( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'conversation.infiniter.tech:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://conversation.infiniter.tech/' 2>/dev/null); printf '1\thttp\t%s\n' "$result" ) &
@@ -11,7 +11,7 @@ printf 'ready 2afae08cbbb0ad07\n'
 ( result=$(docker inspect --format '{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' -- 'fitness-tracker' 2>/dev/null) || result=unknown; printf '3\truntime\t%s\n' "$result" ) &
 ( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'fit.infiniter.tech:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://fit.infiniter.tech/' 2>/dev/null); printf '4\thttp\t%s\n' "$result" ) &
 ( result=$(docker inspect --format '{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' -- 'fitness-tracker-frontend' 2>/dev/null) || result=unknown; printf '4\truntime\t%s\n' "$result" ) &
-( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'fitness-ai-auth.infiniter.tech:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://fitness-ai-auth.infiniter.tech/' 2>/dev/null); printf '5\thttp\t%s\n' "$result" ) &
+( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'fitness-ai-auth.infiniter.tech:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://fitness-ai-auth.infiniter.tech/api/auth/ok' 2>/dev/null); printf '5\thttp\t%s\n' "$result" ) &
 ( result=$(docker inspect --format '{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' -- 'fitness-ai-convex' 2>/dev/null) || result=unknown; printf '5\truntime\t%s\n' "$result" ) &
 ( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'fitness-ai-dashboard.infiniter.tech:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://fitness-ai-dashboard.infiniter.tech/' 2>/dev/null); printf '6\thttp\t%s\n' "$result" ) &
 ( result=$(docker inspect --format '{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' -- 'fitness-ai-dashboard' 2>/dev/null) || result=unknown; printf '6\truntime\t%s\n' "$result" ) &

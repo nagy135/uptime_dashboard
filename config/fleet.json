@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T07:22:28.491Z",
+  "updatedAt": "2026-09-24T07:37:36.180Z",
   "revision": "99f69b34b3d6299d3f49e07064368038dfd19f6c",
   "devices": [
     {
@@ -436,15 +436,16 @@
           "name": "Fitness AI actions",
           "kind": "application",
           "url": "https://fitness-ai-auth.infiniter.tech/",
-          "reachabilityCodes": [
-            404
-          ],
+          "healthPath": "/api/auth/ok",
           "domain": "fitness-ai-auth.infiniter.tech",
           "runtime": {
             "type": "docker",
             "name": "fitness-ai-convex",
             "label": "Convex"
           },
+          "acceptedCodes": [
+            200
+          ],
           "protected": false,
           "publicCheck": true
         },

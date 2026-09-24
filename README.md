@@ -33,7 +33,7 @@ npm run check:once        # one collection; stop the regular collector first
 - One SSH connection per device runs parallel local nginx requests with the
   correct hostname and TLS SNI, plus mapped container/systemd checks.
 - Dedicated paths check Fitness API and browser-car health, the chat Socket.IO
-  endpoint, and the dashboard health API. HTTP redirects indicate a responding
+  endpoint, Fitness AI auth at `/api/auth/ok`, and the dashboard health API. HTTP redirects indicate a responding
   route, not a successful authenticated login. Convex action roots returning 404
   show **degraded / health unverified**, with the container state alongside.
 - Public URL checks are stored separately. Duplicate domains on different hosts
