@@ -18,6 +18,9 @@ import {
   Zap,
 } from 'lucide-react';
 import type { Dashboard, Evidence, PublicApp, Status } from '../shared/types';
+import openCodeIcon from './assets/opencode.svg';
+
+const isOpenCode = (app: PublicApp) => app.domain?.startsWith('edit-') ?? false;
 
 const labels: Record<Status, string> = {
   up: 'Operational',
@@ -64,8 +67,12 @@ function AppRow({ app, now }: { app: PublicApp; now: number }) {
   return (
     <details className="app-row">
       <summary>
-        <div className={`app-icon ${app.kind === 'service' ? 'internal' : ''}`}>
-          {app.kind === 'service' ? (
+        <div
+          className={`app-icon ${isOpenCode(app) ? 'opencode' : app.kind === 'service' ? 'internal' : ''}`}
+        >
+          {isOpenCode(app) ? (
+            <img src={openCodeIcon} alt="OpenCode" width={27} height={27} />
+          ) : app.kind === 'service' ? (
             <Terminal size={17} />
           ) : app.kind === 'static' ? (
             <Layers3 size={17} />
@@ -147,13 +154,17 @@ function DeviceSection({
   const [expanded, setExpanded] = useState(false);
   const matches = device.apps.filter(
     (a) =>
-      `${a.name} ${a.domain || ''}`.toLowerCase().includes(query.toLowerCase()) &&
+      `${a.name} ${a.domain || ''} ${isOpenCode(a) ? 'OpenCode' : ''}`
+        .toLowerCase()
+        .includes(query.toLowerCase()) &&
       (!onlyIssues ||
         a.status !== 'up' ||
         a.stale ||
         (!!a.latest && now - a.latest.checkedAt > 90_000)),
   );
-  const visible = expanded || query || onlyIssues ? matches : matches.slice(0, 7);
+  const applications = matches.filter((app) => !isOpenCode(app));
+  const editors = matches.filter(isOpenCode);
+  const visible = expanded || query || onlyIssues ? applications : applications.slice(0, 7);
   return (
     <section className="device-section" id={device.id}>
       <header className="section-head">
@@ -200,11 +211,25 @@ function DeviceSection({
       {device.apps.every((a) => a.kind === 'service') && !query && (
         <p className="service-note">No web applications configured. Monitoring system services.</p>
       )}
-      {matches.length > 7 && !query && !onlyIssues && (
+      {applications.length > 7 && !query && !onlyIssues && (
         <button className="show-more" onClick={() => setExpanded(!expanded)}>
-          {expanded ? 'Show fewer monitors' : `Show all ${matches.length} monitors`}
+          {expanded ? 'Show fewer monitors' : `Show all ${applications.length} monitors`}
           <ChevronDown size={14} className={expanded ? 'rotate' : ''} />
         </button>
+      )}
+      {editors.length > 0 && (
+        <section className="opencode-group" aria-labelledby={`${device.id}-opencode`}>
+          <h3 id={`${device.id}-opencode`}>
+            <img src={openCodeIcon} alt="" width={18} height={18} />
+            OpenCode
+            <span>
+              {editors.length} {editors.length === 1 ? 'editor' : 'editors'}
+            </span>
+          </h3>
+          {editors.map((app) => (
+            <AppRow key={app.id} app={app} now={now} />
+          ))}
+        </section>
       )}
     </section>
   );

@@ -521,6 +521,33 @@ h1 > span {
   color: #8e9988;
   background: #f2f3ee;
 }
+.app-icon.opencode {
+  height: 27px;
+  border: 0;
+  overflow: hidden;
+}
+.opencode-group h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 23px;
+  background: #f7f8f4;
+  border-top: 1px solid #e9ede2;
+  border-bottom: 1px solid #e9ede2;
+  color: #657356;
+  font-size: 11px;
+  font-weight: 550;
+}
+.opencode-group h3 img {
+  border-radius: 3px;
+}
+.opencode-group h3 span {
+  margin-left: auto;
+  font-size: 9px;
+  font-weight: 400;
+  color: #8e987e;
+}
 .app-name {
   display: flex;
   flex-direction: column;

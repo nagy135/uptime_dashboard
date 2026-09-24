@@ -5,6 +5,10 @@ checks the configured apps and services every **30 seconds**, persists results
 in SQLite, and exposes a read-only status API. Browser refreshes never trigger
 fleet commands. Production URL: **https://status.infiniter.tech** on nixpi.
 
+Hosts beginning with `edit-` appear in a separate **OpenCode** group within their
+server, using the [official OpenCode icon](https://opencode.ai/favicon.svg).
+Search for `OpenCode` to show these editors across the fleet.
+
 ## Run locally
 
 Requires Node.js 24, npm, OpenSSH, and existing SSH access to the fleet.
