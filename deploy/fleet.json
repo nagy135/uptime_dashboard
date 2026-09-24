@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T07:41:49.688Z",
+  "updatedAt": "2026-09-24T07:45:45.107Z",
   "revision": "99f69b34b3d6299d3f49e07064368038dfd19f6c",
   "devices": [
     {
@@ -79,9 +79,10 @@
           "name": "Image editor actions",
           "kind": "application",
           "url": "https://convex-site-edit.infiniter.tech/",
-          "reachabilityCodes": [404],
+          "healthPath": "/version",
           "domain": "convex-site-edit.infiniter.tech",
           "runtime": { "type": "docker", "name": "ai_image_edit-backend-1", "label": "Convex" },
+          "acceptedCodes": [200],
           "protected": false,
           "publicCheck": true
         },

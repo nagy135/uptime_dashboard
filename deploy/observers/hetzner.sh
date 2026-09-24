@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -u
-printf 'ready bd83544c04a88249\n'
+printf 'ready ed9d863c1e307c65\n'
 ( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'addyart.eu:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://addyart.eu/' 2>/dev/null); printf '0\thttp\t%s\n' "$result" ) &
 ( result=$(docker inspect --format '{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' -- 'addy-art' 2>/dev/null) || result=unknown; printf '0\truntime\t%s\n' "$result" ) &
 ( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'auth.infiniter.tech:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://auth.infiniter.tech/oauth2/sign_in' 2>/dev/null); printf '1\thttp\t%s\n' "$result" ) &
@@ -12,7 +12,7 @@ printf 'ready bd83544c04a88249\n'
 ( result=$(docker inspect --format '{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' -- 'portfolio-chat' 2>/dev/null) || result=unknown; printf '4\truntime\t%s\n' "$result" ) &
 ( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'convex-edit.infiniter.tech:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://convex-edit.infiniter.tech/' 2>/dev/null); printf '5\thttp\t%s\n' "$result" ) &
 ( result=$(docker inspect --format '{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' -- 'ai_image_edit-backend-1' 2>/dev/null) || result=unknown; printf '5\truntime\t%s\n' "$result" ) &
-( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'convex-site-edit.infiniter.tech:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://convex-site-edit.infiniter.tech/' 2>/dev/null); printf '6\thttp\t%s\n' "$result" ) &
+( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'convex-site-edit.infiniter.tech:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://convex-site-edit.infiniter.tech/version' 2>/dev/null); printf '6\thttp\t%s\n' "$result" ) &
 ( result=$(docker inspect --format '{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' -- 'ai_image_edit-backend-1' 2>/dev/null) || result=unknown; printf '6\truntime\t%s\n' "$result" ) &
 ( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'dashboard-edit.infiniter.tech:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://dashboard-edit.infiniter.tech/' 2>/dev/null); printf '7\thttp\t%s\n' "$result" ) &
 ( result=$(docker inspect --format '{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' -- 'ai_image_edit-dashboard-1' 2>/dev/null) || result=unknown; printf '7\truntime\t%s\n' "$result" ) &

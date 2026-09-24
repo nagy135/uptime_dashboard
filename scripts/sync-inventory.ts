@@ -142,7 +142,7 @@ for (const host of fleet) {
       ...(key === 'auth' ? { healthPath: '/oauth2/sign_in' } : {}),
       ...(key === 'status' ? { healthPath: '/api/health' } : {}),
       ...(key === 'fitness-ai-auth' ? { healthPath: '/api/auth/ok', acceptedCodes: [200] } : {}),
-      ...(key === 'convex-site-edit' ? { reachabilityCodes: [404] } : {}),
+      ...(key === 'convex-site-edit' ? { healthPath: '/version', acceptedCodes: [200] } : {}),
       kind: external ? 'external' : v.root && !mapping ? 'static' : 'application',
       ...(mapping
         ? { runtime: { type: mapping[3] || 'docker', name: mapping[1], label: mapping[2] } }

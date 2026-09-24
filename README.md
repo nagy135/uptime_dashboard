@@ -38,8 +38,8 @@ npm run check:once        # one collection; stop the regular collector first
   correct hostname and TLS SNI, plus mapped container/systemd checks.
 - Dedicated paths check Fitness API and browser-car health, the chat Socket.IO
   endpoint, Fitness AI auth at `/api/auth/ok`, and the dashboard health API. HTTP redirects indicate a responding
-  route, not a successful authenticated login. Convex action roots returning 404
-  show **degraded / health unverified**, with the container state alongside.
+  route, not a successful authenticated login. The image editor actions host is
+  checked at `/version`: its root returns 404 because no HTTP actions are deployed.
 - Public URL checks are stored separately. Duplicate domains on different hosts
   are intentionally distinct monitors: public DNS can point to only one of them.
 - Failed HTTP checks or stopped/unhealthy runtimes are **down**. Missing evidence
