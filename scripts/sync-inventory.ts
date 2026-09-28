@@ -51,6 +51,7 @@ const mappings: Record<
 > = {
   nixpi: {
     status: ['Fleet status', 'docker-uptime-dashboard.service', 'NixOS container', 'systemd'],
+    office: ['Agent Office', 'agent-office.service', 'Node.js / systemd', 'systemd'],
     relay: ['File relay', 'file-relay-relay-1', 'Docker Compose'],
     conversation: ['Conversation', 'conversation-app-1', 'Docker Compose'],
     speech: ['Agentic speech', 'agentic_speech_demo-app-1', 'Docker Compose'],
@@ -147,7 +148,7 @@ for (const host of fleet) {
       ...(mapping
         ? { runtime: { type: mapping[3] || 'docker', name: mapping[1], label: mapping[2] } }
         : {}),
-      protected: ['mongo', 'pi-status'].includes(key),
+      protected: ['mongo', 'pi-status', 'office'].includes(key),
       publicCheck: true,
     };
   });

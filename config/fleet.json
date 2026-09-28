@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-24T07:45:45.107Z",
-  "revision": "99f69b34b3d6299d3f49e07064368038dfd19f6c",
+  "updatedAt": "2026-09-28T15:04:06.686Z",
+  "revision": "a759fbc38fb91e78f29aac699a51356343d10ab1",
   "devices": [
     {
       "id": "hetzner",
@@ -412,6 +412,20 @@
           "domain": "fitness-ai.infiniter.tech",
           "runtime": { "type": "docker", "name": "fitness-ai-convex", "label": "Convex" },
           "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/office.infiniter.tech",
+          "name": "Agent Office",
+          "kind": "application",
+          "url": "https://office.infiniter.tech/",
+          "domain": "office.infiniter.tech",
+          "runtime": {
+            "type": "systemd",
+            "name": "agent-office.service",
+            "label": "Node.js / systemd"
+          },
+          "protected": true,
           "publicCheck": true
         },
         {
