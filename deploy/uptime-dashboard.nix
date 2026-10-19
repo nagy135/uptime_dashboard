@@ -15,12 +15,12 @@
     };
     extraOptions = ["--cap-drop=ALL" "--security-opt=no-new-privileges" "--read-only" "--tmpfs=/tmp:rw,noexec,nosuid,size=16m"];
   };
-  services.nginx.virtualHosts."status.infiniter.tech" = {
+  services.nginx.virtualHosts."uptime.infiniter.tech" = {
     enableACME = true;
     forceSSL = true;
     locations."/".proxyPass = "http://127.0.0.1:13332";
   };
-  services.infiniter.websupportDDNS.records = ["status"];
+  services.infiniter.websupportDDNS.records = ["uptime"];
   systemd.services.uptime-dashboard-backup = {
     description = "Back up the fleet status SQLite database";
     serviceConfig = { Type = "oneshot"; UMask = "0077"; };

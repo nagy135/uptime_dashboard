@@ -50,7 +50,8 @@ const mappings: Record<
   Record<string, [string, string, string, ('docker' | 'systemd')?]>
 > = {
   nixpi: {
-    status: ['Fleet status', 'docker-uptime-dashboard.service', 'NixOS container', 'systemd'],
+    status: ['Sentinel', 'sentinel.service', 'Bun / systemd', 'systemd'],
+    uptime: ['Fleet status', 'docker-uptime-dashboard.service', 'NixOS container', 'systemd'],
     office: ['Agent Office', 'agent-office.service', 'Node.js / systemd', 'systemd'],
     relay: ['File relay', 'file-relay-relay-1', 'Docker Compose'],
     conversation: ['Conversation', 'conversation-app-1', 'Docker Compose'],
@@ -130,7 +131,13 @@ for (const host of fleet) {
     const external = upstream && !/^https?:\/\/(127\.0\.0\.1|localhost)(:|\/)/.test(upstream);
     const tls = v.forceSSL || v.addSSL || v.onlySSL || v.enableACME;
     return {
-      id: `${host.id}/${domain}`,
+      // Retain the fleet dashboard's original monitor ID across its hostname move.
+      id:
+        host.id === 'nixpi' && key === 'uptime'
+          ? 'nixpi/status.infiniter.tech'
+          : host.id === 'nixpi' && key === 'status'
+            ? 'nixpi/sentinel'
+            : `${host.id}/${domain}`,
       name: mapping?.[0] || names[key] || domain,
       domain,
       url: `${tls ? 'https' : 'http'}://${domain}/`,
@@ -141,7 +148,8 @@ for (const host of fleet) {
         : {}),
       ...(key === 'chat' ? { healthPath: '/socket.io/?EIO=4&transport=polling' } : {}),
       ...(key === 'auth' ? { healthPath: '/oauth2/sign_in' } : {}),
-      ...(key === 'status' ? { healthPath: '/api/health' } : {}),
+      ...(key === 'uptime' && host.id === 'nixpi' ? { healthPath: '/api/health' } : {}),
+      ...(key === 'status' && host.id === 'nixpi' ? { healthPath: '/api/metrics' } : {}),
       ...(key === 'fitness-ai-auth' ? { healthPath: '/api/auth/ok', acceptedCodes: [200] } : {}),
       ...(key === 'convex-site-edit' ? { healthPath: '/version', acceptedCodes: [200] } : {}),
       kind: external ? 'external' : v.root && !mapping ? 'static' : 'application',

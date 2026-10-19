@@ -3,7 +3,7 @@
 A public React dashboard for Hetzner, nixpi, and nixzero. A server-side collector
 checks the configured apps and services every **30 seconds**, persists results
 in SQLite, and exposes a read-only status API. Browser refreshes never trigger
-fleet commands. Production URL: **https://status.infiniter.tech** on nixpi.
+fleet commands. Production URL: **https://uptime.infiniter.tech** on nixpi.
 
 Hosts beginning with `edit-` appear in a separate **OpenCode** group within their
 server, using the [official OpenCode icon](https://opencode.ai/favicon.svg).
@@ -124,9 +124,14 @@ systemctl restart docker-uptime-dashboard
 
 The Nix module is imported by `nix-server/hosts/nixpi/default.nix`. Apply Nix
 changes using the usual `nixos-rebuild switch --flake .#nixpi` workflow. The DDNS
-updater provisions `status.infiniter.tech`; nginx obtains its ACME certificate.
+updater provisions `uptime.infiniter.tech`; nginx obtains its ACME certificate.
 
 Verify `/api/health`, `/api/status`, and fresh `poll_runs` records at least 30
 seconds apart. For backups, use SQLite's `.backup` or the built-in backup timer;
 do not copy only the main database while WAL writes are active. To roll back an
 application release, restore the prior Docker image tag and restart its service.
+
+The fleet dashboard moved from `status.infiniter.tech` to `uptime.infiniter.tech`.
+Its existing `nixpi/status.infiniter.tech` monitor ID is retained to preserve
+availability history. The original hostname now serves Sentinel; inventory sync
+uses the distinct `nixpi/sentinel` ID for that application.

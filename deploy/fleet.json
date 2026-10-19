@@ -466,9 +466,9 @@
           "id": "nixpi/status.infiniter.tech",
           "name": "Fleet status",
           "kind": "application",
-          "url": "https://status.infiniter.tech/",
+          "url": "https://uptime.infiniter.tech/",
           "healthPath": "/api/health",
-          "domain": "status.infiniter.tech",
+          "domain": "uptime.infiniter.tech",
           "runtime": {
             "type": "systemd",
             "name": "docker-uptime-dashboard.service",
