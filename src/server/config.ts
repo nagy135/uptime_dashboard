@@ -14,10 +14,25 @@ const app = z.object({
   id: identifier,
   name: z.string().min(1).max(100),
   kind: z.enum(['application', 'static', 'external', 'service']),
+  access: z.enum(['public', 'tailscale', 'internal']).optional(),
+  accessUrl: z
+    .string()
+    .url()
+    .refine((v) => ['http:', 'https:'].includes(new URL(v).protocol))
+    .optional(),
   url: z
     .string()
     .url()
     .refine((v) => ['http:', 'https:'].includes(new URL(v).protocol))
+    .optional(),
+  // Private on-device health endpoints are never included in the public API.
+  localUrl: z
+    .string()
+    .url()
+    .refine((v) => {
+      const url = new URL(v);
+      return url.protocol === 'http:' && ['127.0.0.1', 'localhost'].includes(url.hostname);
+    })
     .optional(),
   healthPath: z
     .string()
@@ -62,7 +77,7 @@ export const inventorySchema = z
       ctx.addIssue({ code: 'custom', message: 'Inventory IDs must be unique' });
     for (const d of data.devices)
       for (const a of d.apps) {
-        if (!a.url && !a.runtime)
+        if (!a.url && !a.localUrl && !a.runtime)
           ctx.addIssue({ code: 'custom', message: `${a.id}: no check target` });
       }
   });

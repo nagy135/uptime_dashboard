@@ -16,6 +16,21 @@ test('shows fleet, supports filtering, exposes details, and fits the viewport', 
     'https://relay.infiniter.tech/',
   );
   await page.getByRole('textbox', { name: 'Search monitors' }).clear();
+  const privateServices = page.locator('#nixpi .private-group');
+  await expect(privateServices.getByRole('heading', { name: 'Private services' })).toBeVisible();
+  const audio = privateServices.locator('.app-row').filter({ hasText: 'Audio notifications' });
+  await expect(audio).toContainText('Private · Tailscale');
+  await audio.locator('summary').click();
+  await expect(audio.getByRole('link', { name: 'Open via Tailscale' })).toHaveAttribute(
+    'href',
+    'https://nixpi.tail6650cb.ts.net:8444/',
+  );
+  await expect(audio).not.toContainText('Public URL');
+  await expect(privateServices).toContainText('Private · On host');
+  await page.getByRole('textbox', { name: 'Search monitors' }).fill('tailscale');
+  await expect(page.locator('#nixpi .private-group')).toContainText('Audio notifications');
+  await expect(page.locator('#nixpi .private-group')).toContainText('T3 Code');
+  await page.getByRole('textbox', { name: 'Search monitors' }).clear();
   await expect(page.locator('#nixzero')).toContainText('No web applications configured');
   const width = await page.evaluate(() => ({
     scroll: document.documentElement.scrollWidth,

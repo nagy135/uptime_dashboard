@@ -86,6 +86,47 @@ describe('collection and evidence', () => {
     expect(remoteScript(device)).toContain("'https://app.example/health'");
     expect(remoteScript(device)).toContain('app.example:443:127.0.0.1');
   });
+  it('checks private HTTP health locally without probing its Tailscale access link', async () => {
+    const inventory = structuredClone(fixture);
+    inventory.devices[0].apps = [
+      {
+        id: 'pi/audio',
+        name: 'Audio notifications',
+        kind: 'service',
+        access: 'tailscale',
+        accessUrl: 'https://private.example:8444/',
+        localUrl: 'http://127.0.0.1:8787/health',
+        acceptedCodes: [200],
+        protected: false,
+        publicCheck: false,
+      },
+    ];
+    const device = inventory.devices[0];
+    expect(remoteScript(device)).toContain("'http://127.0.0.1:8787/health'");
+    expect(remoteScript(device)).not.toContain('private.example');
+    expect(parseRemote(device, '', 1000)[0].http?.status).toBe('unknown');
+    expect(parseRemote(device, '0\thttp\t503\t0.01\n', 1000)[0].status).toBe('down');
+    const store = database();
+    store.syncInventory(inventory, 1000);
+    const probe = vi.fn();
+    const collector = new Collector(
+      inventory,
+      store,
+      () => {},
+      async () => '0\thttp\t200\t0.01\n',
+      probe,
+    );
+    await collector.tick();
+    expect(probe).not.toHaveBeenCalled();
+    const dashboard = store.dashboard(inventory, null);
+    expect(dashboard.devices[0].apps[0]).toMatchObject({
+      access: 'tailscale',
+      url: 'https://private.example:8444/',
+      status: 'up',
+    });
+    expect(JSON.stringify(dashboard)).not.toContain('127.0.0.1');
+    expect(JSON.stringify(dashboard)).not.toContain('localUrl');
+  });
   it('probes HTTP without following authentication redirects or downloading bodies', async () => {
     const server = createServer((req, res) => {
       if (req.url === '/health') {

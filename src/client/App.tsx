@@ -21,6 +21,8 @@ import type { Dashboard, Evidence, PublicApp, Status } from '../shared/types';
 import openCodeIcon from './assets/opencode.svg';
 
 const isOpenCode = (app: PublicApp) => app.domain?.startsWith('edit-') ?? false;
+const accessLabel = (app: PublicApp) =>
+  app.access === 'tailscale' ? 'Tailscale' : app.access === 'internal' ? 'On host' : 'Public';
 
 const labels: Record<Status, string> = {
   up: 'Operational',
@@ -83,7 +85,7 @@ function AppRow({ app, now }: { app: PublicApp; now: number }) {
         <div className="app-name">
           <strong>{app.name}</strong>
           <span>
-            {app.domain || 'Internal service'}
+            {app.access === 'public' ? app.domain || 'Public' : `Private · ${accessLabel(app)}`}
             {app.latest?.public?.status === 'down' && status === 'up' && <em>Public issue</em>}
           </span>
         </div>
@@ -124,7 +126,9 @@ function AppRow({ app, now }: { app: PublicApp; now: number }) {
       <div className="app-detail">
         <div>
           <EvidenceRow title="On device" evidence={app.latest?.http} />
-          <EvidenceRow title="Public URL" evidence={app.latest?.public} />
+          {app.access === 'public' && (
+            <EvidenceRow title="Public URL" evidence={app.latest?.public} />
+          )}
           <EvidenceRow title={app.runtimeLabel || 'Runtime'} evidence={app.latest?.runtime} />
         </div>
         <div className="detail-meta">
@@ -132,7 +136,8 @@ function AppRow({ app, now }: { app: PublicApp; now: number }) {
           <span>24h coverage: {app.coverage}%</span>
           {app.url && (
             <a href={app.url} target="_blank" rel="noreferrer">
-              Open application <ArrowUpRight size={14} />
+              {app.access === 'tailscale' ? 'Open via Tailscale' : 'Open application'}{' '}
+              <ArrowUpRight size={14} />
             </a>
           )}
         </div>
@@ -154,7 +159,7 @@ function DeviceSection({
   const [expanded, setExpanded] = useState(false);
   const matches = device.apps.filter(
     (a) =>
-      `${a.name} ${a.domain || ''} ${isOpenCode(a) ? 'OpenCode' : ''}`
+      `${a.name} ${a.domain || ''} ${isOpenCode(a) ? 'OpenCode' : ''} ${a.access === 'public' ? 'Public' : `Private ${accessLabel(a)}`}`
         .toLowerCase()
         .includes(query.toLowerCase()) &&
       (!onlyIssues ||
@@ -162,7 +167,8 @@ function DeviceSection({
         a.stale ||
         (!!a.latest && now - a.latest.checkedAt > 90_000)),
   );
-  const applications = matches.filter((app) => !isOpenCode(app));
+  const applications = matches.filter((app) => !isOpenCode(app) && app.access === 'public');
+  const privateApps = matches.filter((app) => !isOpenCode(app) && app.access !== 'public');
   const editors = matches.filter(isOpenCode);
   const visible = expanded || query || onlyIssues ? applications : applications.slice(0, 7);
   return (
@@ -227,6 +233,21 @@ function DeviceSection({
             </span>
           </h3>
           {editors.map((app) => (
+            <AppRow key={app.id} app={app} now={now} />
+          ))}
+        </section>
+      )}
+      {privateApps.length > 0 && (
+        <section className="private-group" aria-labelledby={`${device.id}-private`}>
+          <h3 id={`${device.id}-private`}>
+            <ShieldCheck size={18} />
+            Private services
+            <span>{privateApps.length} monitors</span>
+          </h3>
+          <p className="service-note">
+            Tailscale links require your tailnet. On-host services have no web link.
+          </p>
+          {privateApps.map((app) => (
             <AppRow key={app.id} app={app} now={now} />
           ))}
         </section>

@@ -526,7 +526,8 @@ h1 > span {
   border: 0;
   overflow: hidden;
 }
-.opencode-group h3 {
+.opencode-group h3,
+.private-group h3 {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -542,7 +543,8 @@ h1 > span {
 .opencode-group h3 img {
   border-radius: 3px;
 }
-.opencode-group h3 span {
+.opencode-group h3 span,
+.private-group h3 span {
   margin-left: auto;
   font-size: 9px;
   font-weight: 400;

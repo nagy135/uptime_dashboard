@@ -20,6 +20,7 @@ export interface PublicApp {
   domain?: string;
   url?: string;
   kind: 'application' | 'static' | 'external' | 'service';
+  access: 'public' | 'tailscale' | 'internal';
   runtimeLabel?: string;
   status: Status;
   stale: boolean;

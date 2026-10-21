@@ -21,8 +21,8 @@ const unknown = (message = 'Device collection unavailable'): Evidence => ({
 export function remoteScript(device: Device): string {
   const jobs: string[] = [];
   for (const [index, app] of device.apps.entries()) {
-    if (app.url) {
-      const url = new URL(probeUrl(app));
+    if (app.url || app.localUrl) {
+      const url = new URL(app.localUrl || probeUrl(app));
       jobs.push(
         `( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve ${quote(`${url.hostname}:${url.port || (url.protocol === 'https:' ? '443' : '80')}:127.0.0.1`)} --write-out '%{http_code}\\t%{time_total}' ${quote(url.href)} 2>/dev/null); printf '${index}\\thttp\\t%s\\n' "$result" ) &`,
       );
@@ -89,7 +89,7 @@ export function parseRemote(device: Device, output: string, checkedAt: number): 
         appId: app.id,
         checkedAt,
         status: 'unknown',
-        ...(app.url ? { http: unknown('HTTP check unavailable') } : {}),
+        ...(app.url || app.localUrl ? { http: unknown('HTTP check unavailable') } : {}),
         ...(app.runtime ? { runtime: unknown('Runtime check unavailable') } : {}),
       }) as Observation,
   );
@@ -99,7 +99,7 @@ export function parseRemote(device: Device, output: string, checkedAt: number): 
     const app = device.apps[Number(index)],
       result = results[Number(index)];
     if (!app || !result) continue;
-    if (kind === 'http' && app.url)
+    if (kind === 'http' && (app.url || app.localUrl))
       result.http = httpEvidence(
         Number(value) || 0,
         Math.round((Number(seconds) || 0) * 1000),

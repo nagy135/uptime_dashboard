@@ -9,6 +9,12 @@ Hosts beginning with `edit-` appear in a separate **OpenCode** group within thei
 server, using the [official OpenCode icon](https://opencode.ai/favicon.svg).
 Search for `OpenCode` to show these editors across the fleet.
 
+Private monitors appear in a separate **Private services** group per host.
+**Tailscale** entries provide an access link that requires the tailnet; **On host**
+entries monitor internal containers and infrastructure without a web link. Search
+for `private` or `Tailscale` to find them. Private endpoints are checked on the host,
+with no public URL probe. Local health addresses stay out of the public API.
+
 ## Run locally
 
 Requires Node.js 24, npm, OpenSSH, and existing SSH access to the fleet.
@@ -38,12 +44,19 @@ npm run check:once        # one collection; stop the regular collector first
 - Inventory comes from evaluated Nix configuration, including generated nginx
   routes. Disabled nginx configurations are excluded. Runtime mappings were
   verified using Docker Compose labels and systemd on the actual devices.
+- Private containers without nginx routes are maintained in `privateContainers`
+  in the sync script. Docker, PostgreSQL, Redis, and Prometheus infrastructure are
+  included when enabled in Nix. Review runtime deployments when syncing: Nix
+  evaluation cannot discover manually started Docker containers.
 - One SSH connection per device runs parallel local nginx requests with the
   correct hostname and TLS SNI, plus mapped container/systemd checks.
 - Dedicated paths check Fitness API and browser-car health, the chat Socket.IO
   endpoint, Fitness AI auth at `/api/auth/ok`, and the dashboard health API. HTTP redirects indicate a responding
   route, not a successful authenticated login. The image editor actions host is
   checked at `/version`: its root returns 404 because no HTTP actions are deployed.
+  Sentinel uses `/healthz`, On My Way uses `/api/health`, and audio notifications
+  uses the private `/health` endpoint. Kokoro's Docker health check is monitored
+  separately from the notification server.
 - Public URL checks are stored separately. Duplicate domains on different hosts
   are intentionally distinct monitors: public DNS can point to only one of them.
 - Failed HTTP checks or stopped/unhealthy runtimes are **down**. Missing evidence

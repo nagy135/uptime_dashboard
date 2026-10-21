@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-28T15:04:06.686Z",
-  "revision": "a759fbc38fb91e78f29aac699a51356343d10ab1",
+  "updatedAt": "2026-10-21T13:46:12.200Z",
+  "revision": "09719df9e6bab691db812bcd3b12bc40ac39b5e9",
   "devices": [
     {
       "id": "hetzner",
@@ -184,6 +184,18 @@
           "publicCheck": true
         },
         {
+          "id": "hetzner/hetzner-status.infiniter.tech",
+          "name": "Sentinel",
+          "kind": "application",
+          "url": "https://hetzner-status.infiniter.tech/",
+          "healthPath": "/healthz",
+          "domain": "hetzner-status.infiniter.tech",
+          "runtime": { "type": "systemd", "name": "sentinel.service", "label": "Bun / systemd" },
+          "acceptedCodes": [200],
+          "protected": false,
+          "publicCheck": true
+        },
+        {
           "id": "hetzner/mongo.addyart.eu",
           "name": "Mongo Express",
           "kind": "application",
@@ -314,6 +326,34 @@
           "runtime": { "type": "systemd", "name": "nginx.service", "label": "systemd" },
           "protected": false,
           "publicCheck": false
+        },
+        {
+          "id": "hetzner/service/docker",
+          "name": "Docker",
+          "kind": "service",
+          "runtime": { "type": "systemd", "name": "docker.service", "label": "systemd" },
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "hetzner/container/addy-art-payload-mongo-1",
+          "name": "Addy Art MongoDB",
+          "kind": "service",
+          "access": "internal",
+          "runtime": { "type": "docker", "name": "addy-art-payload-mongo-1", "label": "Docker" },
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "hetzner/container/docker-dashboard-1",
+          "name": "Game of Life dashboard",
+          "kind": "service",
+          "access": "internal",
+          "localUrl": "http://127.0.0.1:6791/",
+          "runtime": { "type": "docker", "name": "docker-dashboard-1", "label": "Docker" },
+          "acceptedCodes": [200],
+          "protected": false,
+          "publicCheck": false
         }
       ]
     },
@@ -348,12 +388,30 @@
           "publicCheck": true
         },
         {
+          "id": "nixpi/docsheet.infiniter.tech",
+          "name": "Docsheet",
+          "kind": "static",
+          "url": "https://docsheet.infiniter.tech/",
+          "domain": "docsheet.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
           "id": "nixpi/drive.infiniter.tech",
           "name": "Nextcloud",
           "kind": "application",
           "url": "http://drive.infiniter.tech/",
           "domain": "drive.infiniter.tech",
           "runtime": { "type": "systemd", "name": "phpfpm-nextcloud.service", "label": "PHP-FPM" },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/fish.infiniter.tech",
+          "name": "Little Depths",
+          "kind": "static",
+          "url": "https://fish.infiniter.tech/",
+          "domain": "fish.infiniter.tech",
           "protected": false,
           "publicCheck": true
         },
@@ -429,6 +487,18 @@
           "publicCheck": true
         },
         {
+          "id": "nixpi/omw.infiniter.tech",
+          "name": "On My Way",
+          "kind": "application",
+          "url": "https://omw.infiniter.tech/",
+          "healthPath": "/api/health",
+          "domain": "omw.infiniter.tech",
+          "runtime": { "type": "docker", "name": "onmyway-app-1", "label": "Docker Compose" },
+          "acceptedCodes": [200],
+          "protected": false,
+          "publicCheck": true
+        },
+        {
           "id": "nixpi/pi-status.infiniter.tech",
           "name": "Pi system metrics",
           "kind": "application",
@@ -436,6 +506,15 @@
           "domain": "pi-status.infiniter.tech",
           "runtime": { "type": "systemd", "name": "grafana.service", "label": "Grafana" },
           "protected": true,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/recipes.infiniter.tech",
+          "name": "Recipes",
+          "kind": "static",
+          "url": "https://recipes.infiniter.tech/",
+          "domain": "recipes.infiniter.tech",
+          "protected": false,
           "publicCheck": true
         },
         {
@@ -459,6 +538,27 @@
             "name": "agentic_speech_demo-app-1",
             "label": "Docker Compose"
           },
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/spore.infiniter.tech",
+          "name": "Spore",
+          "kind": "static",
+          "url": "https://spore.infiniter.tech/",
+          "domain": "spore.infiniter.tech",
+          "protected": false,
+          "publicCheck": true
+        },
+        {
+          "id": "nixpi/sentinel",
+          "name": "Sentinel",
+          "kind": "application",
+          "url": "https://status.infiniter.tech/",
+          "healthPath": "/healthz",
+          "domain": "status.infiniter.tech",
+          "runtime": { "type": "systemd", "name": "sentinel.service", "label": "Bun / systemd" },
+          "acceptedCodes": [200],
           "protected": false,
           "publicCheck": true
         },
@@ -505,7 +605,93 @@
           "id": "nixpi/service/t3code",
           "name": "T3 Code",
           "kind": "service",
+          "access": "tailscale",
+          "accessUrl": "https://nixpi.tail6650cb.ts.net:8443/",
+          "localUrl": "http://127.0.0.1:3773/",
           "runtime": { "type": "systemd", "name": "t3code.service", "label": "systemd" },
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "nixpi/service/docker",
+          "name": "Docker",
+          "kind": "service",
+          "runtime": { "type": "systemd", "name": "docker.service", "label": "systemd" },
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "nixpi/service/postgresql",
+          "name": "PostgreSQL",
+          "kind": "service",
+          "runtime": { "type": "systemd", "name": "postgresql.service", "label": "systemd" },
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "nixpi/service/redis-nextcloud",
+          "name": "Nextcloud Redis",
+          "kind": "service",
+          "runtime": { "type": "systemd", "name": "redis-nextcloud.service", "label": "systemd" },
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "nixpi/service/prometheus",
+          "name": "Prometheus",
+          "kind": "service",
+          "runtime": { "type": "systemd", "name": "prometheus.service", "label": "systemd" },
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "nixpi/service/prometheus-node-exporter",
+          "name": "Prometheus node exporter",
+          "kind": "service",
+          "runtime": {
+            "type": "systemd",
+            "name": "prometheus-node-exporter.service",
+            "label": "systemd"
+          },
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "nixpi/container/audio-notifications-server-1",
+          "name": "Audio notifications",
+          "kind": "service",
+          "access": "tailscale",
+          "accessUrl": "https://nixpi.tail6650cb.ts.net:8444/",
+          "localUrl": "http://127.0.0.1:8787/health",
+          "runtime": {
+            "type": "docker",
+            "name": "audio-notifications-server-1",
+            "label": "Docker"
+          },
+          "acceptedCodes": [200],
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "nixpi/container/audio-notifications-kokoro-1",
+          "name": "Kokoro speech engine",
+          "kind": "service",
+          "access": "internal",
+          "runtime": {
+            "type": "docker",
+            "name": "audio-notifications-kokoro-1",
+            "label": "Docker"
+          },
+          "protected": false,
+          "publicCheck": false
+        },
+        {
+          "id": "nixpi/container/fitness-ai-experiment",
+          "name": "Fitness AI experiment",
+          "kind": "service",
+          "access": "tailscale",
+          "accessUrl": "http://nixpi.tail6650cb.ts.net:43210/",
+          "runtime": { "type": "docker", "name": "fitness-ai-experiment", "label": "Docker" },
           "protected": false,
           "publicCheck": false
         }
