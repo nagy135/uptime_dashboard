@@ -9,6 +9,10 @@ Hosts beginning with `edit-` appear in a separate **OpenCode** group within thei
 server, using the [official OpenCode icon](https://opencode.ai/favicon.svg).
 Search for `OpenCode` to show these editors across the fleet.
 
+The theme selector beside Refresh defaults to **System** and follows appearance
+changes automatically. Choose **Light** or **Dark** to override it; the browser
+remembers your choice. Select **System** to resume following your device.
+
 Private monitors appear in a separate **Private services** group per host.
 **Tailscale** entries provide an access link that requires the tailnet; **On host**
 entries monitor internal containers and infrastructure without a web link. Search

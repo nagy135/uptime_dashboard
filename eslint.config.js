@@ -27,5 +27,9 @@ export default defineConfig([
     extends: [reactHooks.configs.flat.recommended],
     languageOptions: { globals: globals.browser },
   },
+  {
+    files: ['public/**/*.js'],
+    languageOptions: { globals: globals.browser },
+  },
   prettier,
 ]);

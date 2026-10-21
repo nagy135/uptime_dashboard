@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import type { Dashboard, Evidence, PublicApp, Status } from '../shared/types';
 import openCodeIcon from './assets/opencode.svg';
+import { ThemePicker } from './ThemePicker';
 
 const isOpenCode = (app: PublicApp) => app.domain?.startsWith('edit-') ?? false;
 const accessLabel = (app: PublicApp) =>
@@ -362,10 +363,13 @@ export function App() {
               </h1>
               <p>Your applications, across every device. One clear picture.</p>
             </div>
-            <button className="refresh" onClick={() => void refetch()} disabled={isFetching}>
-              <RefreshCw size={15} className={isFetching ? 'spinning' : ''} />
-              Refresh view
-            </button>
+            <div className="heading-actions">
+              <ThemePicker />
+              <button className="refresh" onClick={() => void refetch()} disabled={isFetching}>
+                <RefreshCw size={15} className={isFetching ? 'spinning' : ''} />
+                Refresh view
+              </button>
+            </div>
           </div>
           {error && (
             <div className="error-banner" role="alert">

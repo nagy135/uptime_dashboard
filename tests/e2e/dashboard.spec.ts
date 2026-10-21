@@ -1,4 +1,64 @@
 import { test, expect } from '@playwright/test';
+
+test('follows the system appearance and remembers explicit theme choices', async ({
+  page,
+}, testInfo) => {
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.goto('/');
+  const theme = page.getByRole('combobox', { name: 'Color theme' });
+  const root = page.locator('html');
+  await expect(theme).toHaveValue('system');
+  await expect(root).toHaveCSS('background-color', 'rgb(246, 247, 244)');
+
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await expect(root).toHaveCSS('background-color', 'rgb(21, 28, 24)');
+  await expect(page.locator('.stat').first()).toHaveCSS('background-color', 'rgb(29, 39, 32)');
+
+  await theme.selectOption('light');
+  await expect(root).toHaveCSS('background-color', 'rgb(246, 247, 244)');
+  await page.reload();
+  await expect(theme).toHaveValue('light');
+  await expect(root).toHaveCSS('background-color', 'rgb(246, 247, 244)');
+
+  await theme.selectOption('dark');
+  await page.emulateMedia({ colorScheme: 'light' });
+  await expect(root).toHaveCSS('background-color', 'rgb(21, 28, 24)');
+  await page.reload();
+  await expect(theme).toHaveValue('dark');
+  await expect(root).toHaveCSS('background-color', 'rgb(21, 28, 24)');
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#151c18');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+    testInfo.project.use.viewport!.width,
+  );
+  await page.screenshot({ path: `test-results/${testInfo.project.name}-dark.png`, fullPage: true });
+
+  await theme.selectOption('system');
+  await expect(root).toHaveCSS('background-color', 'rgb(246, 247, 244)');
+  await page.reload();
+  await expect(theme).toHaveValue('system');
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await expect(root).toHaveCSS('background-color', 'rgb(21, 28, 24)');
+});
+
+test('can change themes when browser storage is unavailable', async ({ page }) => {
+  await page.addInitScript(() => {
+    for (const method of ['getItem', 'setItem']) {
+      Object.defineProperty(Storage.prototype, method, {
+        value: () => {
+          throw new Error('Storage unavailable');
+        },
+      });
+    }
+  });
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/');
+  const theme = page.getByRole('combobox', { name: 'Color theme' });
+  await expect(theme).toHaveValue('system');
+  await expect(page.locator('html')).toHaveCSS('background-color', 'rgb(21, 28, 24)');
+  await theme.selectOption('light');
+  await expect(page.locator('html')).toHaveCSS('background-color', 'rgb(246, 247, 244)');
+});
+
 test('shows fleet, supports filtering, exposes details, and fits the viewport', async ({
   page,
 }, testInfo) => {
