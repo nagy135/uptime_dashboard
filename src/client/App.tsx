@@ -9,7 +9,6 @@ import {
   Clock3,
   Globe2,
   Layers3,
-  Radio,
   RefreshCw,
   Search,
   Server,
@@ -344,15 +343,12 @@ export function App() {
       </aside>
       <main>
         <header className="topbar">
-          <div>
+          <div className="breadcrumbs">
             <span>Workspace</span>
             <span className="slash">/</span>
             <strong>Fleet overview</strong>
           </div>
-          <span className="live-label">
-            <Radio size={14} />
-            LIVE MONITORING
-          </span>
+          <ThemePicker />
         </header>
         <div className="content">
           <div className="page-heading">
@@ -363,13 +359,10 @@ export function App() {
               </h1>
               <p>Your applications, across every device. One clear picture.</p>
             </div>
-            <div className="heading-actions">
-              <ThemePicker />
-              <button className="refresh" onClick={() => void refetch()} disabled={isFetching}>
-                <RefreshCw size={15} className={isFetching ? 'spinning' : ''} />
-                Refresh view
-              </button>
-            </div>
+            <button className="refresh" onClick={() => void refetch()} disabled={isFetching}>
+              <RefreshCw size={15} className={isFetching ? 'spinning' : ''} />
+              Refresh view
+            </button>
           </div>
           {error && (
             <div className="error-banner" role="alert">
