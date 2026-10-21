@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import type { Dashboard, PublicApp } from '../../src/shared/types';
 
 const themeButton = (page: Page) => page.getByRole('button', { name: /^Color theme:/ });
 async function chooseTheme(page: Page, name: string) {
@@ -7,6 +8,78 @@ async function chooseTheme(page: Page, name: string) {
   await expect(themeButton(page)).toHaveAccessibleName(`Color theme: ${name}`);
   await expect(page.getByRole('menu', { name: 'Color theme' })).toHaveCount(0);
 }
+
+test('keeps disabled apps listed without counting them as issues or unknown', async ({ page }) => {
+  const now = Date.now();
+  const active: PublicApp = {
+    id: 'test/live',
+    name: 'Live app',
+    domain: 'live.example',
+    kind: 'application',
+    access: 'public',
+    status: 'up',
+    stale: false,
+    latest: { appId: 'test/live', checkedAt: now, status: 'up' },
+    history: [],
+    availability: 100,
+    coverage: 100,
+  };
+  const retired = (id: string, name: string, domain: string): PublicApp => ({
+    ...active,
+    id,
+    name,
+    domain,
+    status: 'disabled',
+    latest: null,
+    availability: null,
+    coverage: 0,
+  });
+  const dashboard: Dashboard = {
+    generatedAt: now,
+    lastCheckedAt: now,
+    nextCheckAt: now + 30000,
+    pollIntervalMs: 30000,
+    staleAfterMs: 90000,
+    inventoryUpdatedAt: new Date(now).toISOString(),
+    devices: [
+      {
+        id: 'hetzner',
+        name: 'Hetzner',
+        subtitle: 'Test fleet',
+        status: 'up',
+        reachable: true,
+        checkedAt: now,
+        lastSeenAt: now,
+        apps: [
+          active,
+          retired('test/drive', 'Drive', 'drive.example'),
+          retired('test/editor', 'Shift development', 'edit-shift.example'),
+        ],
+      },
+    ],
+  };
+  await page.route('**/api/status', (route) => route.fulfill({ json: dashboard }));
+  await page.goto('/');
+  await expect(page.locator('.health-banner')).toContainText('All systems operational');
+  await expect(page.locator('.health-banner')).toContainText(
+    '1 operational · 0 need attention · 0 unknown · 2 disabled',
+  );
+  await expect(page.locator('.badge.disabled')).toHaveCount(2);
+  await expect(page.locator('.opencode-group')).toContainText('Disabled');
+  await page.getByRole('textbox', { name: 'Search monitors' }).fill('disabled');
+  await expect(page.locator('.app-row')).toHaveCount(2);
+  await page.locator('.app-row').filter({ hasText: 'Drive' }).locator('summary').click();
+  await expect(
+    page.locator('.app-row').filter({ hasText: 'Drive' }).locator('.disabled-note'),
+  ).toContainText('Intentionally disabled');
+  await expect(page.locator('.app-row').filter({ hasText: 'Drive' })).not.toContainText(
+    'Not checked',
+  );
+  await page.getByRole('button', { name: 'Needs attention', exact: true }).click();
+  await expect(page.locator('.app-row')).toHaveCount(0);
+  await page.getByRole('textbox', { name: 'Search monitors' }).clear();
+  await expect(page.locator('.app-row')).toHaveCount(0);
+});
 
 test('shows an icon-only theme button with a downward menu and Lookout favicon', async ({
   page,

@@ -13,6 +13,7 @@ const runtime = z.object({
 const app = z.object({
   id: identifier,
   name: z.string().min(1).max(100),
+  disabled: z.boolean().optional(),
   kind: z.enum(['application', 'static', 'external', 'service']),
   access: z.enum(['public', 'tailscale', 'internal']).optional(),
   accessUrl: z

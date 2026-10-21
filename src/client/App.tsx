@@ -9,6 +9,7 @@ import {
   Clock3,
   Globe2,
   Layers3,
+  Pause,
   RefreshCw,
   Search,
   Server,
@@ -29,6 +30,7 @@ const labels: Record<Status, string> = {
   down: 'Down',
   degraded: 'Degraded',
   unknown: 'Unknown',
+  disabled: 'Disabled',
 };
 const age = (time: number | null | undefined, now: number) =>
   !time
@@ -64,7 +66,8 @@ function EvidenceRow({ title, evidence }: { title: string; evidence?: Evidence }
   );
 }
 function AppRow({ app, now }: { app: PublicApp; now: number }) {
-  const stale = app.stale || (!!app.latest && now - app.latest.checkedAt > 90_000);
+  const disabled = app.status === 'disabled';
+  const stale = !disabled && (app.stale || (!!app.latest && now - app.latest.checkedAt > 90_000));
   const status = stale ? 'unknown' : app.status;
   return (
     <details className="app-row">
@@ -92,11 +95,19 @@ function AppRow({ app, now }: { app: PublicApp; now: number }) {
         <div className="row-status">
           <Badge
             status={status}
-            label={stale && app.latest ? 'Stale' : !app.latest ? 'Not checked' : undefined}
+            label={
+              disabled
+                ? 'Disabled'
+                : stale && app.latest
+                  ? 'Stale'
+                  : !app.latest
+                    ? 'Not checked'
+                    : undefined
+            }
           />
         </div>
         <div className="latency">
-          {app.latest?.http?.latencyMs !== undefined && !stale ? (
+          {app.latest?.http?.latencyMs !== undefined && !stale && !disabled ? (
             <>
               {app.latest.http.latencyMs}
               <small> ms</small>
@@ -105,35 +116,58 @@ function AppRow({ app, now }: { app: PublicApp; now: number }) {
             <span className="muted">—</span>
           )}
         </div>
-        <div className="history" aria-label="Availability over the last 30 minutes">
-          {app.history.map((point, i) => (
-            <i
-              key={point.at}
-              className={point.status}
-              title={`${new Date(point.at).toLocaleTimeString()} · ${labels[point.status]}`}
-              style={{ opacity: i === 59 ? 0.7 : 1 }}
-            />
-          ))}
+        <div
+          className={`history ${disabled ? 'paused' : ''}`}
+          aria-label={disabled ? 'Monitoring paused' : 'Availability over the last 30 minutes'}
+        >
+          {disabled ? (
+            <>
+              <Pause size={12} /> Monitoring paused
+            </>
+          ) : (
+            app.history.map((point, i) => (
+              <i
+                key={point.at}
+                className={point.status}
+                title={`${new Date(point.at).toLocaleTimeString()} · ${labels[point.status]}`}
+                style={{ opacity: i === 59 ? 0.7 : 1 }}
+              />
+            ))
+          )}
         </div>
         <div
           className="availability"
-          title={`Successful checks over the last 24 hours. ${app.coverage}% monitoring coverage.`}
+          title={
+            disabled
+              ? 'Monitoring paused'
+              : `Successful checks over the last 24 hours. ${app.coverage}% monitoring coverage.`
+          }
         >
-          {app.availability === null ? '—' : `${app.availability}%`}
+          {disabled || app.availability === null ? '—' : `${app.availability}%`}
         </div>
         <ChevronDown className="row-chevron" size={15} />
       </summary>
       <div className="app-detail">
-        <div>
-          <EvidenceRow title="On device" evidence={app.latest?.http} />
-          {app.access === 'public' && (
-            <EvidenceRow title="Public URL" evidence={app.latest?.public} />
-          )}
-          <EvidenceRow title={app.runtimeLabel || 'Runtime'} evidence={app.latest?.runtime} />
-        </div>
+        {disabled ? (
+          <p className="disabled-note">
+            Intentionally disabled. Health checks are paused; previous observations are retained.
+          </p>
+        ) : (
+          <div>
+            <EvidenceRow title="On device" evidence={app.latest?.http} />
+            {app.access === 'public' && (
+              <EvidenceRow title="Public URL" evidence={app.latest?.public} />
+            )}
+            <EvidenceRow title={app.runtimeLabel || 'Runtime'} evidence={app.latest?.runtime} />
+          </div>
+        )}
         <div className="detail-meta">
-          <span>Checked {age(app.latest?.checkedAt, now)}</span>
-          <span>24h coverage: {app.coverage}%</span>
+          {!disabled && (
+            <>
+              <span>Checked {age(app.latest?.checkedAt, now)}</span>
+              <span>24h coverage: {app.coverage}%</span>
+            </>
+          )}
           {app.url && (
             <a href={app.url} target="_blank" rel="noreferrer">
               {app.access === 'tailscale' ? 'Open via Tailscale' : 'Open application'}{' '}
@@ -159,13 +193,12 @@ function DeviceSection({
   const [expanded, setExpanded] = useState(false);
   const matches = device.apps.filter(
     (a) =>
-      `${a.name} ${a.domain || ''} ${isOpenCode(a) ? 'OpenCode' : ''} ${a.access === 'public' ? 'Public' : `Private ${accessLabel(a)}`}`
+      `${a.name} ${a.domain || ''} ${labels[a.status]} ${isOpenCode(a) ? 'OpenCode' : ''} ${a.access === 'public' ? 'Public' : `Private ${accessLabel(a)}`}`
         .toLowerCase()
         .includes(query.toLowerCase()) &&
       (!onlyIssues ||
-        a.status !== 'up' ||
-        a.stale ||
-        (!!a.latest && now - a.latest.checkedAt > 90_000)),
+        (a.status !== 'disabled' &&
+          (a.status !== 'up' || a.stale || (!!a.latest && now - a.latest.checkedAt > 90_000)))),
   );
   const applications = matches.filter((app) => !isOpenCode(app) && app.access === 'public');
   const privateApps = matches.filter((app) => !isOpenCode(app) && app.access !== 'public');
@@ -277,10 +310,11 @@ export function App() {
   const apps = data?.devices.flatMap((d) => d.apps) || [];
   const fresh = (a: PublicApp) => !a.stale && !!a.latest && now - a.latest.checkedAt <= 90_000;
   const up = apps.filter((a) => fresh(a) && a.status === 'up').length;
+  const disabled = apps.filter((a) => a.status === 'disabled').length;
   const issues = apps.filter((a) => fresh(a) && ['down', 'degraded'].includes(a.status)).length;
-  const pending = apps.length - up - issues;
+  const pending = apps.length - up - issues - disabled;
   const latencies = apps
-    .filter((a) => fresh(a) && a.latest?.http?.status === 'up')
+    .filter((a) => a.status !== 'disabled' && fresh(a) && a.latest?.http?.status === 'up')
     .map((a) => a.latest!.http!.latencyMs!)
     .filter((n) => n !== undefined);
   const average = latencies.length
@@ -381,7 +415,7 @@ export function App() {
               <strong>{title}</strong>
               <p>
                 {data?.lastCheckedAt
-                  ? `${up} operational · ${issues} need attention · ${pending} unknown`
+                  ? `${up} operational · ${issues} need attention · ${pending} unknown${disabled ? ` · ${disabled} disabled` : ''}`
                   : 'The first collection will appear here shortly.'}
               </p>
             </div>
@@ -400,7 +434,11 @@ export function App() {
                 {data ? apps.length : '—'}
                 <small>across {data?.devices.length || 3} devices</small>
               </strong>
-              <p>Applications & system services</p>
+              <p>
+                {disabled
+                  ? `${disabled} disabled · ${apps.length - disabled} monitored`
+                  : 'Applications & system services'}
+              </p>
             </div>
             <div className="stat">
               <span>
@@ -494,6 +532,10 @@ export function App() {
               <i className="unknown" />
               No observation
             </span>
+            <span>
+              <i className="disabled" />
+              Disabled
+            </span>
             <span className="legend-help">
               <CircleHelp size={13} />
               Select a row for check details
@@ -504,7 +546,9 @@ export function App() {
               <Clock3 size={13} />
               Checks & view refresh every 30 seconds
             </span>
-            <span>24h success excludes missing observations · coverage in details</span>
+            <span>
+              24h success excludes missing and disabled observations · coverage in details
+            </span>
           </footer>
         </div>
       </main>

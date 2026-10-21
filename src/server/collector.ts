@@ -21,6 +21,7 @@ const unknown = (message = 'Device collection unavailable'): Evidence => ({
 export function remoteScript(device: Device): string {
   const jobs: string[] = [];
   for (const [index, app] of device.apps.entries()) {
+    if (app.disabled) continue;
     if (app.url || app.localUrl) {
       const url = new URL(app.localUrl || probeUrl(app));
       jobs.push(
@@ -88,9 +89,13 @@ export function parseRemote(device: Device, output: string, checkedAt: number): 
       ({
         appId: app.id,
         checkedAt,
-        status: 'unknown',
-        ...(app.url || app.localUrl ? { http: unknown('HTTP check unavailable') } : {}),
-        ...(app.runtime ? { runtime: unknown('Runtime check unavailable') } : {}),
+        ...(app.disabled
+          ? { status: 'disabled' }
+          : {
+              status: 'unknown',
+              ...(app.url || app.localUrl ? { http: unknown('HTTP check unavailable') } : {}),
+              ...(app.runtime ? { runtime: unknown('Runtime check unavailable') } : {}),
+            }),
       }) as Observation,
   );
   for (const line of output.split('\n')) {
@@ -98,7 +103,7 @@ export function parseRemote(device: Device, output: string, checkedAt: number): 
     if (!/^\d+$/.test(index)) continue;
     const app = device.apps[Number(index)],
       result = results[Number(index)];
-    if (!app || !result) continue;
+    if (!app || !result || app.disabled) continue;
     if (kind === 'http' && (app.url || app.localUrl))
       result.http = httpEvidence(
         Number(value) || 0,
@@ -141,9 +146,13 @@ export function parseRemote(device: Device, output: string, checkedAt: number): 
       };
     }
   }
-  return results.map((result) => ({ ...result, status: overall(result) }));
+  return results.map((result) => ({
+    ...result,
+    status: result.status === 'disabled' ? 'disabled' : overall(result),
+  }));
 }
 export async function publicProbe(app: App, signal?: AbortSignal): Promise<Evidence> {
+  if (app.disabled) return { status: 'disabled', message: 'Monitoring paused' };
   const started = performance.now();
   try {
     // A bounded GET tests APIs that do not implement HEAD. Do not download bodies.
@@ -209,7 +218,7 @@ export class Collector {
         // At most 100 trusted inventory targets per device. Independent 7 s deadlines.
         await Promise.all(
           device.apps
-            .filter((a) => a.url && a.publicCheck)
+            .filter((a) => !a.disabled && a.url && a.publicCheck)
             .map(async (app) => {
               publicResults.set(
                 app.id,

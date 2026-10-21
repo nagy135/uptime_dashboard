@@ -38,6 +38,9 @@ export function overall(observation: Pick<Observation, 'http' | 'runtime'>): Sta
   return 'up';
 }
 export function summarize(statuses: Status[]): Status {
+  const active = statuses.filter((status) => status !== 'disabled');
+  if (statuses.length && !active.length) return 'disabled';
+  statuses = active;
   if (!statuses.length || statuses.every((s) => s === 'unknown')) return 'unknown';
   if (statuses.every((s) => s === 'down')) return 'down';
   if (statuses.some((s) => s !== 'up')) return 'degraded';

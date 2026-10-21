@@ -12,8 +12,8 @@ import {
   publicProbe,
   remoteScript,
 } from '../src/server/collector.js';
-import { inventorySchema, type Inventory } from '../src/server/config.js';
-import { overall } from '../src/server/status.js';
+import { inventorySchema, type App, type Inventory } from '../src/server/config.js';
+import { overall, summarize } from '../src/server/status.js';
 
 const fixture: Inventory = inventorySchema.parse({
   updatedAt: '2026-09-24T00:00:00Z',
@@ -52,6 +52,46 @@ function database() {
 }
 
 describe('collection and evidence', () => {
+  it('skips disabled targets and keeps them disabled even when a host is unavailable', async () => {
+    const inventory = structuredClone(fixture);
+    inventory.devices[0].apps.push({
+      ...inventory.devices[0].apps[0],
+      id: 'pi/retired',
+      name: 'Retired app',
+      url: 'https://retired.example/',
+      disabled: true,
+      runtime: { type: 'docker', name: 'retired-container', label: 'Docker' },
+    });
+    const device = inventory.devices[0];
+    expect(remoteScript(device)).not.toContain('retired.example');
+    expect(remoteScript(device)).not.toContain('retired-container');
+    const results = parseRemote(device, '1\thttp\t500\t0.01\n1\truntime\trunning|healthy\n', 1000);
+    expect(results[1]).toEqual({ appId: 'pi/retired', checkedAt: 1000, status: 'disabled' });
+    const store = database();
+    store.syncInventory(inventory);
+    const probe = vi.fn(async (_app: App) => ({ status: 'up' as const, message: 'HTTP 200' }));
+    const collector = new Collector(
+      inventory,
+      store,
+      () => {},
+      async () => {
+        throw new Error('Offline');
+      },
+      probe,
+    );
+    await collector.tick();
+    expect(probe).toHaveBeenCalledTimes(1);
+    expect(probe.mock.calls[0][0].id).toBe('pi/app');
+    expect(store.dashboard(inventory, null).devices[0].apps[1]).toMatchObject({
+      status: 'disabled',
+      stale: false,
+      latest: null,
+    });
+    expect(summarize(['up', 'disabled'])).toBe('up');
+    expect(summarize(['disabled'])).toBe('disabled');
+    expect(summarize(['down', 'disabled'])).toBe('down');
+    expect(summarize(['unknown', 'disabled'])).toBe('unknown');
+  });
   it('distinguishes an active process from a failed HTTP route', () => {
     const [result] = parseRemote(
       fixture.devices[0],
@@ -175,6 +215,43 @@ describe('collection and evidence', () => {
 });
 
 describe('storage and public API', () => {
+  it('retains disabled monitors and their observations without treating pauses as failed checks', () => {
+    const store = database();
+    store.saveCycle(1000, [{ appId: 'pi/app', checkedAt: 1000, status: 'down' }], [], 1000);
+    const disabled = structuredClone(fixture);
+    disabled.devices[0].apps[0].disabled = true;
+    store.syncInventory(disabled, 31_000);
+    const app = store.dashboard(disabled, null, 200_000).devices[0].apps[0];
+    expect(app).toMatchObject({
+      id: 'pi/app',
+      status: 'disabled',
+      stale: false,
+      latest: null,
+      availability: null,
+      coverage: 0,
+    });
+    expect(store.sqlite.prepare('SELECT enabled FROM apps').get()).toEqual({ enabled: 1 });
+    expect(store.sqlite.prepare('SELECT COUNT(*) AS n FROM observations').get()).toEqual({ n: 1 });
+    // A later re-enable resumes normal monitoring; paused samples do not reduce success or coverage.
+    store.saveCycle(
+      31_000,
+      [{ appId: 'pi/app', checkedAt: 31_000, status: 'disabled' }],
+      [],
+      31_000,
+    );
+    store.syncInventory(fixture, 61_000);
+    store.saveCycle(
+      61_000,
+      [{ appId: 'pi/app', checkedAt: 61_000, status: 'up' }],
+      [{ deviceId: 'pi', checkedAt: 61_000, reachable: true }],
+      61_000,
+    );
+    const enabled = store.dashboard(fixture, null, 61_000).devices[0].apps[0];
+    expect(enabled.status).toBe('up');
+    expect(enabled.availability).toBe(50);
+    expect(enabled.coverage).toBe(100);
+    expect(enabled.history.some((point) => point.status === 'disabled')).toBe(true);
+  });
   it('persists observations after reopening SQLite and marks old data stale', () => {
     const directory = mkdtempSync(join(tmpdir(), 'fleet-test-'));
     cleanups.push(() => rmSync(directory, { recursive: true, force: true }));

@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-21T13:46:12.200Z",
-  "revision": "09719df9e6bab691db812bcd3b12bc40ac39b5e9",
+  "updatedAt": "2026-10-21T18:53:16.452Z",
+  "revision": "bd7deca9740ce1a0ad59f48b879a8fd3258038fc",
   "devices": [
     {
       "id": "hetzner",
@@ -113,6 +113,7 @@
         {
           "id": "hetzner/drive.infiniter.tech",
           "name": "Drive",
+          "disabled": true,
           "kind": "application",
           "url": "https://drive.infiniter.tech/",
           "domain": "drive.infiniter.tech",
@@ -122,6 +123,7 @@
         {
           "id": "hetzner/edit-shift-distributor.infiniter.tech",
           "name": "Shift development",
+          "disabled": true,
           "kind": "application",
           "url": "https://edit-shift-distributor.infiniter.tech/",
           "domain": "edit-shift-distributor.infiniter.tech",
@@ -136,6 +138,7 @@
         {
           "id": "hetzner/edit-vite-portfolio.infiniter.tech",
           "name": "Portfolio development",
+          "disabled": true,
           "kind": "application",
           "url": "https://edit-vite-portfolio.infiniter.tech/",
           "domain": "edit-vite-portfolio.infiniter.tech",
@@ -159,6 +162,7 @@
         {
           "id": "hetzner/fit-api.infiniter.tech",
           "name": "Fitness API",
+          "disabled": true,
           "kind": "application",
           "url": "https://fit-api.infiniter.tech/",
           "domain": "fit-api.infiniter.tech",
@@ -168,6 +172,7 @@
         {
           "id": "hetzner/fit.infiniter.tech",
           "name": "Fitness tracker",
+          "disabled": true,
           "kind": "application",
           "url": "https://fit.infiniter.tech/",
           "domain": "fit.infiniter.tech",
@@ -198,6 +203,7 @@
         {
           "id": "hetzner/mongo.addyart.eu",
           "name": "Mongo Express",
+          "disabled": true,
           "kind": "application",
           "url": "https://mongo.addyart.eu/",
           "domain": "mongo.addyart.eu",
@@ -212,6 +218,7 @@
         {
           "id": "hetzner/n8n.infiniter.tech",
           "name": "n8n",
+          "disabled": true,
           "kind": "application",
           "url": "https://n8n.infiniter.tech/",
           "domain": "n8n.infiniter.tech",
@@ -221,6 +228,7 @@
         {
           "id": "hetzner/netflix.infiniter.tech",
           "name": "Media server",
+          "disabled": true,
           "kind": "application",
           "url": "https://netflix.infiniter.tech/",
           "domain": "netflix.infiniter.tech",
@@ -230,6 +238,7 @@
         {
           "id": "hetzner/ntfy.infiniter.tech",
           "name": "Notifications",
+          "disabled": true,
           "kind": "application",
           "url": "https://ntfy.infiniter.tech/",
           "domain": "ntfy.infiniter.tech",
@@ -239,6 +248,7 @@
         {
           "id": "hetzner/paste.infiniter.tech",
           "name": "Paste",
+          "disabled": true,
           "kind": "application",
           "url": "https://paste.infiniter.tech/",
           "domain": "paste.infiniter.tech",
@@ -248,6 +258,7 @@
         {
           "id": "hetzner/photo.infiniter.tech",
           "name": "Photos",
+          "disabled": true,
           "kind": "application",
           "url": "https://photo.infiniter.tech/",
           "domain": "photo.infiniter.tech",

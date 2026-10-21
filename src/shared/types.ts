@@ -1,4 +1,4 @@
-export type Status = 'up' | 'down' | 'degraded' | 'unknown';
+export type Status = 'up' | 'down' | 'degraded' | 'unknown' | 'disabled';
 export type CheckKind = 'http' | 'public' | 'runtime';
 export interface Evidence {
   status: Status;

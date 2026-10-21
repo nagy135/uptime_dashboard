@@ -20,6 +20,13 @@ entries monitor internal containers and infrastructure without a web link. Searc
 for `private` or `Tailscale` to find them. Private endpoints are checked on the host,
 with no public URL probe. Local health addresses stay out of the public API.
 
+Intentionally retired projects stay listed as **Disabled**, with monitoring paused.
+They are excluded from attention/unknown counts and uptime calculations. Search for
+`disabled` to find them. Disabled routes and OpenCode services remain defined in
+`nix-server` but are not deployed; inventory sync retains their original monitor IDs
+from `services.infiniter.fleet.disabledVirtualHosts`. Re-enable them in Nix and sync
+the inventory to resume monitoring. Existing observations follow the normal retention policy.
+
 ## Run locally
 
 Requires Node.js 24, npm, OpenSSH, and existing SSH access to the fleet.
@@ -47,7 +54,8 @@ npm run check:once        # one collection; stop the regular collector first
 ## How checks work
 
 - Inventory comes from evaluated Nix configuration, including generated nginx
-  routes. Disabled nginx configurations are excluded. Runtime mappings were
+  routes, including explicitly retained disabled projects. Hosts with nginx disabled
+  and no retained projects have no web monitors. Runtime mappings were
   verified using Docker Compose labels and systemd on the actual devices.
 - Private containers without nginx routes are maintained in `privateContainers`
   in the sync script. Docker, PostgreSQL, Redis, and Prometheus infrastructure are
@@ -67,6 +75,9 @@ npm run check:once        # one collection; stop the regular collector first
 - Failed HTTP checks or stopped/unhealthy runtimes are **down**. Missing evidence
   is **unknown**. Conflicting/incomplete evidence is **degraded**. Records older
   than 90 seconds become stale, including when the API cannot refresh.
+- **Disabled** is an intentional configuration state, not a failed check. No HTTP,
+  public URL, or runtime probes run for disabled apps. Paused observations do not
+  count against successful-check percentages or monitoring coverage after re-enabling.
 - The UI shows 30 minutes of history and a 24-hour successful-check percentage.
   Unknown/missing observations are excluded from that percentage; coverage is
   disclosed in row details. This is sampled availability, not a guarantee of

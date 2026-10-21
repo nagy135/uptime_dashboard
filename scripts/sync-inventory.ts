@@ -6,6 +6,7 @@ import { inventorySchema, type App, type Device } from '../src/server/config.js'
 
 interface EvaluatedConfig {
   nginxEnabled: boolean;
+  disabledHosts: string[];
   hosts: Record<
     string,
     {
@@ -23,10 +24,15 @@ interface EvaluatedConfig {
 const repo = resolve(process.argv[2] || '../nix-server');
 const expression = `c: {
   nginxEnabled = c.services.nginx.enable;
+  disabledHosts = builtins.attrNames c.services.infiniter.fleet.disabledVirtualHosts;
   hosts = builtins.mapAttrs (name: h: {
-    inherit (h) root forceSSL addSSL onlySSL enableACME;
-    locations = builtins.mapAttrs (path: l: { inherit (l) proxyPass; }) h.locations;
-  }) c.services.nginx.virtualHosts;
+    root = h.root or null;
+    forceSSL = h.forceSSL or false;
+    addSSL = h.addSSL or false;
+    onlySSL = h.onlySSL or false;
+    enableACME = h.enableACME or false;
+    locations = builtins.mapAttrs (path: l: { proxyPass = l.proxyPass or null; }) (h.locations or {});
+  }) (c.services.nginx.virtualHosts // c.services.infiniter.fleet.disabledVirtualHosts);
   units = builtins.filter (name: c.systemd.services.\${name}.enable) (builtins.attrNames c.systemd.services);
 }`;
 const fleet = [
@@ -168,6 +174,7 @@ for (const host of fleet) {
             ? 'nixpi/sentinel'
             : `${host.id}/${domain}`,
       name: mapping?.[0] || names[key] || domain,
+      ...(data.disabledHosts.includes(domain) ? { disabled: true } : {}),
       domain,
       url: `${tls ? 'https' : 'http'}://${domain}/`,
       ...(key === 'car-socket' ||

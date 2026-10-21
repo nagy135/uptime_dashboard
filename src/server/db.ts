@@ -129,19 +129,26 @@ export class Store {
             )
             .get(app.id) as { evidence: string } | undefined;
           const latest: Observation | null = row ? JSON.parse(row.evidence) : null;
-          const stale = !latest || now - latest.checkedAt > STALE_AFTER;
+          const stale = !app.disabled && (!latest || now - latest.checkedAt > STALE_AFTER);
           const rows = this.sqlite
             .prepare(
               'SELECT checked_at, status FROM observations WHERE app_id = ? AND checked_at >= ? ORDER BY checked_at',
             )
             .all(app.id, now - 86_400_000) as Array<{ checked_at: number; status: Status }>;
-          const known = rows.filter((r) => r.status !== 'unknown');
+          const known = rows.filter((r) => r.status !== 'unknown' && r.status !== 'disabled');
+          const paused = new Set(
+            rows
+              .filter((r) => r.status === 'disabled')
+              .map((r) => Math.floor(r.checked_at / POLL_INTERVAL)),
+          ).size;
           const first = this.sqlite
             .prepare('SELECT first_seen FROM apps WHERE id = ?')
             .get(app.id) as { first_seen: number };
           const expected = Math.max(
             1,
-            Math.floor((now - Math.max(first.first_seen, now - 86_400_000)) / POLL_INTERVAL) + 1,
+            Math.floor((now - Math.max(first.first_seen, now - 86_400_000)) / POLL_INTERVAL) +
+              1 -
+              paused,
           );
           const end = Math.floor(now / POLL_INTERVAL) * POLL_INTERVAL;
           const buckets = new Map(
@@ -155,18 +162,20 @@ export class Store {
             domain: app.domain,
             url: app.accessUrl || app.url,
             runtimeLabel: app.runtime?.label,
-            latest,
+            latest: app.disabled ? null : latest,
             stale,
-            status: stale ? 'unknown' : latest!.status,
+            status: app.disabled ? 'disabled' : stale ? 'unknown' : latest!.status,
             history: Array.from({ length: 60 }, (_, i) => {
               const at = end - (59 - i) * POLL_INTERVAL;
               return { at, status: buckets.get(at) || 'unknown' };
             }),
-            availability: known.length
-              ? Math.round((known.filter((r) => r.status === 'up').length / known.length) * 1000) /
-                10
-              : null,
-            coverage: Math.min(100, Math.round((known.length / expected) * 100)),
+            availability:
+              !app.disabled && known.length
+                ? Math.round(
+                    (known.filter((r) => r.status === 'up').length / known.length) * 1000,
+                  ) / 10
+                : null,
+            coverage: app.disabled ? 0 : Math.min(100, Math.round((known.length / expected) * 100)),
           };
         });
         const reachable = check && now - check.checked_at <= STALE_AFTER ? !!check.reachable : null;
