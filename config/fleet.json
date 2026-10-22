@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-10-21T18:53:16.452Z",
-  "revision": "bd7deca9740ce1a0ad59f48b879a8fd3258038fc",
+  "updatedAt": "2026-10-22T19:59:04.491Z",
+  "revision": "4dd90f918045929ce04696ed62c4b38352b0db28",
   "devices": [
     {
       "id": "hetzner",
@@ -21,6 +21,7 @@
         {
           "id": "hetzner/auth.infiniter.tech",
           "name": "Fleet sign-in",
+          "disabled": true,
           "kind": "application",
           "url": "https://auth.infiniter.tech/",
           "healthPath": "/oauth2/sign_in",

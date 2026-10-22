@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 set -u
-printf 'ready 0dad9799c080fd39\n'
+printf 'ready 2b8b2b24a6611dae\n'
 ( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'addyart.eu:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://addyart.eu/' 2>/dev/null); printf '0\thttp\t%s\n' "$result" ) &
 ( result=$(docker inspect --format '{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' -- 'addy-art' 2>/dev/null) || result=unknown; printf '0\truntime\t%s\n' "$result" ) &
-( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'auth.infiniter.tech:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://auth.infiniter.tech/oauth2/sign_in' 2>/dev/null); printf '1\thttp\t%s\n' "$result" ) &
-( result=$(systemctl show --property=ActiveState --value -- 'oauth2-proxy.service' 2>/dev/null) || result=unknown; printf '1\truntime\t%s\n' "$result" ) &
 ( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'car-socket.infiniter.tech:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://car-socket.infiniter.tech/health' 2>/dev/null); printf '2\thttp\t%s\n' "$result" ) &
 ( result=$(docker inspect --format '{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' -- 'browser-car-server-1' 2>/dev/null) || result=unknown; printf '2\truntime\t%s\n' "$result" ) &
 ( result=$(curl --silent --output /dev/null --connect-timeout 3 --max-time 7 --noproxy '*' --resolve 'car.infiniter.tech:443:127.0.0.1' --write-out '%{http_code}\t%{time_total}' 'https://car.infiniter.tech/' 2>/dev/null); printf '3\thttp\t%s\n' "$result" ) &
